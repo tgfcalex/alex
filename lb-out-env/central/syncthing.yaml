@@ -1,0 +1,54 @@
+modules:
+  static:
+    user: op
+    is_delete: False
+    path: /var/lb/static/
+    excludes: ""
+  site-out:
+    user: op
+    is_delete: False
+    path: /var/lb/site-out/
+    excludes:
+      - central/
+      - .git/
+      - .gitignore
+  ssl:
+    user: op
+    is_delete: False
+    path: /var/lb/ssl/
+    excludes:
+      - pay/.git/
+      - pay/.gitignore
+  env:
+    user: op
+    is_delete: False
+    path: /var/lb/conf/
+    excludes: ""
+
+hosts:
+  all:
+#   - lb-test-1
+#   - lb-test-2
+   - lb-site-1
+   - lb-site-2
+   - lb-site-3
+   - lb-site-4
+   - lb-site-5
+   - lb-site-6
+   - lb-site-7
+   - lb-site-8
+   - lb-site-9
+   - lb-site-10
+   - lb-site-11
+#   - lb-source-1
+   - lb-adm-1
+   - lb-adm-2
+   - lb-adm-3
+   - lb-api-1
+   - lb-api-2
+#   - lb-api-3
+  excludes:    # 例外同步 host
+    # host : reason
+    #lb-test-2: 自主站点, 基本忽略
+
+

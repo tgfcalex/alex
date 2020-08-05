@@ -1,0 +1,27 @@
+server {
+    listen      80;
+    server_name  elk.lb-boss.com;
+
+    allow 122.2.70.207;
+    allow 122.2.70.208;
+    allow 122.2.70.209;
+    allow 122.2.70.210;
+    allow 122.2.70.211;
+    allow 122.2.70.212;
+    allow 61.28.172.6;
+    allow 61.28.172.12;
+    allow 122.2.70.251;
+    deny all ;
+    auth_basic "Restricted Access";      # 验证
+    auth_basic_user_file /usr/local/openresty/nginx/htpasswd.users; 
+
+    location /elk/ {
+        proxy_pass http://kibana:5601/;
+        rewrite /elk/(.*) /$1  break;
+
+    }
+
+    location / {
+        return 403;
+    }
+}

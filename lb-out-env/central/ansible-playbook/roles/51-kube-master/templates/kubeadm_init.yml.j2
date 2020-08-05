@@ -1,0 +1,27 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: {{ ansible_default_ipv4.address }}
+  bindPort: 6443
+nodeRegistration:
+  criSocket: /var/run/dockershim.sock
+  name: {{ ansible_host }}
+  taints:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+imageRepository: k8s.gcr.io
+kubernetesVersion: {{ KUBEADM_VERSION }}
+networking:
+  dnsDomain: {{ KUBEADM_DNSDOMAIN }}
+  serviceSubnet: 10.96.0.0/12
+  podSubnet: 10.244.0.0/16
+
+---
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+mode: ipvs

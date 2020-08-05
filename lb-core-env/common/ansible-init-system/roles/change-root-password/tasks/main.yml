@@ -1,0 +1,11 @@
+---
+
+- name:  设置主机root密码
+  shell: pwd=`openssl rand -base64 20` && echo $pwd  >/root/.rootpwd  && echo "root:$pwd" | chpasswd && echo $pwd
+  register:  password
+
+- name: 将密码存入大鱼平台
+  debug: var=password.stdout
+  with_items: password.results
+
+

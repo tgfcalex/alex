@@ -1,0 +1,29 @@
+---
+
+# 声明判断条件
+- name: "Condition: {{ etcd_pkg }}.tar.gz"
+  stat: path="{{ local_temp_dir }}{{ etcd_pkg }}.tar.gz"
+  register: etcd_tar_gz
+
+
+- name: "Download {{ local_temp_dir }}{{ etcd_pkg }}.tar.gz"
+  get_url:
+    url: "{{ etcd_download_url }}"
+    dest: "{{ local_temp_dir }}{{ etcd_pkg }}.tar.gz"
+    validate_certs: False
+  when: not etcd_tar_gz.stat.exists
+
+- name: "Extract {{ local_temp_dir }}{{ etcd_pkg }}.tar.gz"
+  unarchive:
+    src: "{{ local_temp_dir }}{{ etcd_pkg }}.tar.gz"
+    dest: "{{ local_temp_dir }}"
+    copy: no
+
+- name: "Copy <etcd> <etcdctl> to {{ local_setup_bin }}"
+  copy:
+    src: "{{ local_temp_dir }}{{ etcd_pkg }}/{{ item }}"
+    dest: "{{ local_setup_bin }}{{ item }}"
+    mode: 0755
+  with_items:
+    - etcd
+    - etcdctl

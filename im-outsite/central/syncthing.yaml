@@ -1,0 +1,47 @@
+modules:
+  freessl:
+    user: op
+    is_delete: False
+    path: /etc/letsencrypt/ssl/
+    excludes: ''
+  static:
+    user: op
+    is_delete: False
+    path: /var/lb/static/
+    excludes: ""
+  theme:
+    user: op
+    is_delete: False
+    path: /var/lb/static/theme/
+    excludes: ""
+  site-out:
+    user: op
+    is_delete: False
+    path: /var/lb/site-out/
+    excludes:
+      - central/
+      - .git/
+      - .gitignore
+
+
+hosts:
+  all:
+#   - lb-test-1
+#   - lb-test-2
+   - lb-site-1
+#   - lb-site-2
+#   - lb-site-3
+#   - lb-site-4
+#   - lb-source-1
+#   - lb-source-2
+   - lb-adm-1
+#   - lb-adm-2
+#   - lb-adm-3
+   - lb-api-1
+#   - lb-api-2
+#   - lb-api-3
+  excludes:    # 例外同步 host
+    # host : reason
+    lb-test-2: 自主站点, 基本忽略
+
+

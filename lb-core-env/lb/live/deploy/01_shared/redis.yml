@@ -1,0 +1,76 @@
+# Usage : docker stack deploy -c redis.yml rd
+
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  rd-1:
+    image: hub.dayu-boss.com/core/redis
+    networks:
+      - lbnet
+    hostname: rd-1
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 1]
+      restart_policy:
+        condition: on-failure
+
+  rd-2:
+    image: hub.dayu-boss.com/core/redis
+    networks:
+      - lbnet
+    hostname: rd-2
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 2]
+      restart_policy:
+        condition: on-failure
+
+  rd-3:
+    image: hub.dayu-boss.com/core/redis
+    networks:
+      - lbnet
+    hostname: rd-3
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 3]
+      restart_policy:
+        condition: on-failure
+
+  rd-4:
+    image: hub.dayu-boss.com/core/redis
+    networks:
+      - lbnet
+    hostname: rd-4
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 3]
+      restart_policy:
+        condition: on-failure
+
+
+  rd-5:
+    image: hub.dayu-boss.com/core/redis
+    networks:
+      - lbnet
+    hostname: rd-5
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 2]
+      restart_policy:
+        condition: on-failure
+
+  rd-6:
+    image: hub.dayu-boss.com/core/redis
+    networks:
+      - lbnet
+    hostname: rd-6
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 1]
+      restart_policy:
+        condition: on-failure

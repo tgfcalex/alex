@@ -1,0 +1,29 @@
+# Description: 核心机房nginx,部署在a上
+# Usage : docker stack deploy -c core-ngx-a.yml lb
+version: "3.3"
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  core-ngx:
+    image: hub.dayu-boss.com/core/openresty
+    networks:
+      lbnet:
+        aliases:
+          - lb-fserver
+    hostname: core-ngx
+    ports:
+      - target: 80
+        published: 13380
+        protocol: tcp
+        mode: host
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.a-ngx == true ]
+    volumes:
+      - /var/lb/glusterfs/conf/core-ngx.a/:/usr/local/openresty/nginx/conf/
+      - /var/lb/logs/core-ngx.a/:/data/nginx/logs/
+      - /var/lb/script:/usr/local/openresty/nginx/script

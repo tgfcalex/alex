@@ -1,0 +1,9 @@
+---
+
+- name: Encure /home/op/.ssh isn't exist
+  file: path=/home/op/.ssh  mode=0700  state=directory
+
+- name: copy authorized_keys
+  copy: src=authorized_keys dest=/home/op/.ssh/authorized_keys
+- file: path=/home/op/.ssh/authorized_keys mode=0600 state=file
+

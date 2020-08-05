@@ -1,0 +1,50 @@
+---
+
+# 删除旧版本
+- name: Ensure old versions of Docker are not installed.
+  yum:
+    name: '{{ item }}'
+    state: absent
+  with_items:
+    - lxc-docker
+    - docker-engine
+    - docker
+    - docker-common
+    - docker.io
+
+#安装存储库
+- name: Ensure depend package is installed
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+# 添加 repo
+- name: Add Docker repository.
+  copy:
+    src: docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    owner: root
+    group: root
+    mode: 0644
+
+# 安装指定版本
+- name: Install docker
+  yum:
+    name: "docker-ce"
+    state: present
+    enablerepo: docker-ce-stable
+
+# 添加 /etc/docker/
+- name: Ensure /etc/docker/ exist
+  file: path=/etc/docker/ mode=0600 state=directory
+
+# 启动服务器
+- name: Ensure Docker is started and enabled at boot.
+  systemd:
+    name: docker
+    state: started
+    enabled: yes

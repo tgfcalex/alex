@@ -1,0 +1,26 @@
+---
+
+- name: sysctl-load
+  shell: sysctl --system
+  become: yes
+
+- name: modprobe br_netfilter
+  shell: source /etc/sysconfig/modules/br_netfilter.modules
+
+- name: modprobe ip_vs
+  shell: source /etc/sysconfig/modules/ip_vs.modules
+
+- name: Restarted rsyslog service
+  systemd:
+    name: rsyslog
+    state: restarted
+
+- name: Restarted crond service
+  systemd:
+    name: crond
+    state: restarted
+
+- name: Restarted docker service
+  systemd:
+    name: docker
+    state: restarted

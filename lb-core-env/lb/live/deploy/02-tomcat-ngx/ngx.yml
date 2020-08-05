@@ -1,0 +1,99 @@
+version: "3.3"
+networks:
+  lbnet:
+    external: true
+
+services:
+
+# api 8001
+  api-ngx:
+    image: hub:5000/openresty
+    networks:
+      - lbnet
+    hostname: api-ngx
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.ngx == true]
+    ports:
+      - "8001:80"
+    volumes:
+      - /var/lb/conf/api-ngx/:/usr/local/nginx/conf/
+      - /var/lb/logs/api-ngx/:/data/nginx/logs
+
+# hall 8002
+  hall-ngx:
+    image: hub:5000/openresty
+    networks:
+      - lbnet
+    hostname: hall-ngx
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.ngx == true]
+    ports:
+      - "8002:80"
+    volumes:
+      - /var/lb/conf/hall-ngx/:/usr/local/nginx/conf/
+      - /var/lb/logs/hall-ngx/:/data/nginx/logs
+
+# manger 8003
+  manager-ngx:
+    image: hub:5000/openresty
+    networks:
+      - lbnet
+    hostname: manager-ngx
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.ngx == true]
+    ports:
+      - "8003:80"
+    volumes:
+      - /var/lb/conf/manager-ngx/:/usr/local/nginx/conf/
+      - /var/lb/logs/manager-ngx/:/data/nginx/logs
+
+# mdcenter 8004
+  mdcenter-ngx:
+    image: hub:5000/openresty
+    networks:
+      - lbnet
+    hostname: mdcenter-ngx
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.ngx == true]
+    ports:
+      - "8004:80"
+    volumes:
+      - /var/lb/conf/mdcenter-ngx/:/usr/local/nginx/conf/
+      - /var/lb/logs/mdcenter-ngx/:/data/nginx/logs
+
+# 8005
+
+
+# rcenter 8006
+  rcenter-ngx:
+    image: hub:5000/openresty
+    networks:
+      lbnet:
+        aliases:
+          - lb-fserver
+    hostname: rcenter-ngx
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.ngx == true]
+    ports:
+      - target: 80
+        published: 8006
+        protocol: tcp
+        mode: host
+    volumes:
+      - /var/lb/conf/rcenter-ngx/:/usr/local/nginx/conf/
+      - /var/lb/logs/rcenter-ngx/:/data/nginx/logs
+      - /var/lb/data/fserver/upload/data:/usr/local/nginx/html/fserver/files
+      - /var/lb/apps/rcenter:/usr/local/openresty/nginx/html/rcenter
+      - /var/lb/apps/mobile-h5/:/usr/local/openresty/nginx/html/six/
+      - /var/lb/apps/pc-h5/:/usr/local/openresty/nginx/html/cp/
+      - /var/lb/script:/usr/local/openresty/nginx/script

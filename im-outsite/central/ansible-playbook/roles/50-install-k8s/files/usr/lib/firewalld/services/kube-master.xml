@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kubernetes Master</short>
+  <description>Ports required for a Kubernetes Master node per https://kubernetes.io/docs/setup/independent/install-kubeadm/.</description>
+  <port protocol="tcp" port="6443"/>
+  <port protocol="tcp" port="2379-2380"/>
+  <port protocol="tcp" port="10250-10252"/>
+  <port port="10255" protocol="tcp"/>
+</service>
+
+<!--
+TCP	Inbound	6443*	    Kubernetes API server	All
+TCP	Inbound	2379-2380	etcd server client API	kube-apiserver, etcd
+TCP	Inbound	10250	    Kubelet API	            Self, Control plane
+TCP	Inbound	10251	    kube-scheduler	        Self
+TCP	Inbound	10252	    kube-controller-manager	Self
+-->
+

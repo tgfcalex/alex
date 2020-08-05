@@ -1,0 +1,41 @@
+---
+
+- name: Import RPM-GPG-KEY-elrepo
+  rpm_key:
+    state: present
+    key: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+
+- name: Add elrepo.repo
+  yum:
+    name: https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+    state: present
+
+- name: Disable elrepo
+  ini_file:
+    dest: /etc/yum.repos.d/elrepo.repo
+    section: "elrepo"
+    option: 'enabled'
+    value: '0'
+    no_extra_spaces: yes
+
+- name: Remove kernel-headers
+  yum:
+    name: kernel-headers
+    state: absent
+    skip_broken: yes
+
+- name: Install kernel-lt
+  yum:
+    name:
+    - 'kernel-lt'
+    - 'kernel-lt-devel'
+    - 'kernel-lt-headers'
+    state: present
+    enablerepo: elrepo-kernel
+    disable_excludes: all
+  notify: ["Reboot system"]
+
+- name: "Set grub2 default"
+  shell: grub2-set-default 0
+  notify: ["Reboot system"]
+  ignore_errors: True

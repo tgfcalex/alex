@@ -1,0 +1,9 @@
+---
+
+#修改 sshd 配置
+- name: "copy sshd_config"
+  copy: src=sshd_config dest=/etc/ssh/sshd_config mode=0600
+  notify: sshd-reload
+
+- name: sshd restart
+  shell: systemctl restart sshd

@@ -1,0 +1,17 @@
+# Description: fserver文件上传服务
+
+version: "3"
+
+services:
+  fserver:
+    image: hub:5000/tomcat-php
+    hostname: fserver
+    container_name: fserver
+    restart: always
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+    volumes:
+      - /var/lb/apps/fserver:/usr/local/tomcat/webapps/fserver/
+      - /var/lb/logs/fserver:/usr/local/tomcat/logs/
+      - /var/lb/data/fserver/upload/tmp:/data/upload/tmp/
+      - /var/lb/data/fserver/upload/data:/data/upload/data/

@@ -1,0 +1,36 @@
+---
+
+- name: Get /etc/yum.repos.d/epel.repo
+  stat: path=/etc/yum.repos.d/epel.repo
+  register: epel_repo
+
+- name: "Install epel repo"
+  yum:
+    name: 'epel-release.noarch'
+    state: latest
+  when: epel_repo.stat.exists is defined and epel_repo.stat.exists == False
+
+- name: "Set yum.conf exclude kernel*  centos-release* docker* kube*"
+  ini_file:
+    dest: /etc/yum.conf
+    section: "main"
+    option: 'exclude'
+    value: 'kernel* centos-release* docker* kube*'
+    no_extra_spaces: yes
+
+- name: Install the 'Development tools' package group
+  yum:
+    name: "@Development tools"
+    state: present
+    exclude: kernel*,centos-release*,docker*
+
+- name: Install packages
+  yum:
+    name: "{{ pkg_list }}"
+    state: present
+
+- name: Upgrade all packages, excluding kernel
+  yum:
+    name: '*'
+    state: latest
+    exclude: "*"

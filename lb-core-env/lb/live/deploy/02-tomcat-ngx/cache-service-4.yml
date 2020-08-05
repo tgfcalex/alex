@@ -1,0 +1,36 @@
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+  cache-service-4:
+    image: hub.dayu-boss.com/core/tomcat-php
+    networks:
+      - lbnet
+    hostname: cache-service-4
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=A
+    volumes:
+      - /var/lb/glusterfs/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/lb/data/mq/cache-service4-rdb:/var/data/mq/rdb
+      - /var/lb/apps/cache-service:/usr/local/tomcat/webapps/cache-service
+      - /var/lb/logs/cache-service:/usr/local/tomcat/logs/

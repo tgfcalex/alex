@@ -1,0 +1,157 @@
+# Description: 生产测试线tomcat
+# Usage: docker stack deploy -c v-tomcat-service.yml  v
+
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+  server-1:
+    image: hub:5000/tomcat-php
+    networks:
+      - lbnet
+    hostname: server-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=V
+    volumes:
+      - /var/v-lb/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/v-lb/data/mq/server-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/server:/usr/local/tomcat/webapps/server
+      - /var/v-lb/logs/server:/usr/local/tomcat/logs/
+
+  schedule-1:
+    image: hub:5000/tomcat-php
+    networks:
+      - lbnet
+    hostname: schedule-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=V
+    volumes:
+      - /var/v-lb/data/mq/schedule-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/schedule:/usr/local/tomcat/webapps/schedule
+      - /var/v-lb/logs/schedule:/usr/local/tomcat/logs/
+
+  game-schedule-1:
+    image: hub:5000/tomcat-php
+    networks:
+      - lbnet
+    hostname: game-schedule-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=V
+    volumes:
+      - /var/v-lb/data/mq/game-schedule-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/game-schedule:/usr/local/tomcat/webapps/game-schedule
+      - /var/v-lb/logs/game-schedule:/usr/local/tomcat/logs/
+
+  cache-service-1:
+    image: hub:5000/tomcat-php
+    networks:
+      - lbnet
+    hostname: cache-service-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=V
+    volumes:
+      - /var/v-lb/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/v-lb/data/mq/cache-service-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/cache-service:/usr/local/tomcat/webapps/cache-service
+      - /var/v-lb/logs/cache-service:/usr/local/tomcat/logs/
+
+distributor-1:
+    image: hub:5000/tomcat-php
+    networks:
+      - lbnet
+    hostname: distributor-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=V
+    volumes:
+      - /var/v-lb/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/v-lb/data/mq/distributor-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/distributor:/usr/local/tomcat/webapps/distributor
+      - /var/v-lb/logs/distributor:/usr/local/tomcat/logs/

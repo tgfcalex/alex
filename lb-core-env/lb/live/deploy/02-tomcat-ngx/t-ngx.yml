@@ -1,0 +1,25 @@
+version: "3.3"
+networks:
+  lbnet:
+    external: true
+
+services:
+
+# third
+  third-ngx:
+    image: hub.dayu-boss.com/core/openresty:latest
+    hostname: third-ngx
+    networks:
+      lbnet:
+        aliases:
+          - 3rd-game-api
+          - 3rd-pay-api
+          - 3rd.pay.api.com
+          - 3rd.game.api.com
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.third == true]
+    volumes:
+      - /var/lb/conf/third-ngx/:/usr/local/nginx/conf/
+      - /var/lb/logs/third-ngx/:/data/nginx/logs

@@ -1,0 +1,217 @@
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  mdcenter-1:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: mdcenter-1
+    environment:
+        - JAVA_OPT=-Xms2500m -Xmx2500m -Xmn2g
+        - idc=A
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/data/mq/mdcenter-rdb:/var/data/mq/rdb
+      - /var/lb/apps/mdcenter:/usr/local/tomcat/webapps/mdcenter
+      - /var/lb/logs/mdcenter:/usr/local/tomcat/logs/
+
+  manager-1:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: manager-1
+    environment:
+        - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+        - idc=A
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/data/mq/manager-rdb:/var/data/mq/rdb
+      - /var/lb/apps/manager:/usr/local/tomcat/webapps/manager
+      - /var/lb/logs/manager:/usr/local/tomcat/logs/
+
+  api-1:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: api-1
+    environment:
+        - JAVA_OPT=-Xms3500m -Xmx3500m -Xmn3g
+        - idc=A
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/data/mq/api-rdb:/var/data/mq/rdb
+      - /var/lb/apps/api:/usr/local/tomcat/webapps/api
+      - /var/lb/logs/api:/usr/local/tomcat/logs/
+
+  server-1:
+    image: hub.dayu-boss.com/core/tomcat-php
+    networks:
+      - lbnet
+    hostname: server-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=A
+    volumes:
+      - /var/lb/glusterfs/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/lb/data/mq/server-rdb:/var/data/mq/rdb
+      - /var/lb/apps/server:/usr/local/tomcat/webapps/server
+      - /var/lb/logs/server:/usr/local/tomcat/logs/
+
+  hall-1:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: hall-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=A
+    volumes:
+      - /var/lb/data/mq/hall-rdb:/var/data/mq/rdb
+      - /var/lb/apps/hall:/usr/local/tomcat/webapps/hall
+      - /var/lb/logs/hall:/usr/local/tomcat/logs/
+
+  schedule-1:
+    image: hub.dayu-boss.com/core/tomcat-php
+    networks:
+      - lbnet
+    hostname: schedule-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=A
+    volumes:
+      - /var/lb/data/mq/schedule-rdb:/var/data/mq/rdb
+      - /var/lb/apps/schedule:/usr/local/tomcat/webapps/schedule
+      - /var/lb/logs/schedule:/usr/local/tomcat/logs/
+
+  game-schedule-1:
+    image: hub.dayu-boss.com/core/tomcat-php
+    networks:
+      - lbnet
+    hostname: game-schedule-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=A
+    volumes:
+      - /var/lb/data/mq/game-schedule-rdb:/var/data/mq/rdb
+      - /var/lb/apps/game-schedule:/usr/local/tomcat/webapps/game-schedule
+      - /var/lb/logs/game-schedule:/usr/local/tomcat/logs/
+
+  cache-service-1:
+    image: hub.dayu-boss.com/core/tomcat-php
+    networks:
+      - lbnet
+    hostname: cache-service-1
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
+      - idc=A
+    volumes:
+      - /var/lb/glusterfs/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/lb/data/mq/cache-service-rdb:/var/data/mq/rdb
+      - /var/lb/apps/cache-service:/usr/local/tomcat/webapps/cache-service
+      - /var/lb/logs/cache-service:/usr/local/tomcat/logs/

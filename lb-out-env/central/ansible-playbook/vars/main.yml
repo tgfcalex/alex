@@ -1,0 +1,49 @@
+########################################################################
+#                                                                      #
+#                    大写变量名可按需修改                                 #
+#                    小写变量名无需修改                                   #
+#                                                                      #
+########################################################################
+
+
+# ---------- system ----------
+UPDATE_KERNEL: 'yes'         # 升级内核
+SET_HOSTNAME: True
+use_firewalld: False
+
+ansible_temp_dir: '/tmp/'
+local_temp_dir: '/tmp/'
+local_setup_bin: "~/bin/"
+
+# ---------- docker ----------
+INSTALL_DOCKER: 'yes'         # 安装 k8s
+DOCKER_VERSION: "18.09.9"     # 可指定安装 docker 版本
+docker__default_daemon_json: |
+  "log-driver": "journald"
+docker__daemon_json: ""
+
+# ---------- kubernetes ----------
+INSTALL_K8S: 'yes'           # 安装 k8s
+K8S_VERSION: '1.16.3-0'      # k8s 版本
+KUBEADM_VERSION: v1.16.3
+KUBEADM_DNSDOMAIN: cluster.local
+
+
+
+
+## 二进制部署
+## ---------- cfssl ----------
+#cfssl_url: 'https://pkg.cfssl.org/R1.2/cfssl_linux-amd64'
+#cfssljson_url: 'https://pkg.cfssl.org/R1.2/cfssl_linux-amd64'
+#cfssl_certinfo_url: 'https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64'
+#
+## ---------- etcd ----------
+#ETCD_VERSION: '3.3.17'
+#etcd_pkg: "etcd-v{{ ETCD_VERSION }}-linux-{{ (ansible_architecture == 'x86_64') | ternary('amd64', ansible_architecture) }}"
+#etcd_download_url: "https://github.com/coreos/etcd/releases/download/v{{ ETCD_VERSION }}/{{ etcd_pkg }}.tar.gz"
+#
+## ---------- flannel ----------
+#FLANNEL_VERSION: '0.11.0'
+#flannel_pkg: "flannel-v{{ FLANNEL_VERSION }}-linux-{{ (ansible_architecture == 'x86_64') | ternary('amd64', ansible_architecture) }}"
+#flannel_download_url: "https://github.com/coreos/flannel/releases/download/v{{ FLANNEL_VERSION }}/{{ flannel_pkg }}.tar.gz"
+#

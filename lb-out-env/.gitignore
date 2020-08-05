@@ -1,0 +1,13 @@
+apps/*
+logs/*
+*.swp
+*.pyc
+*.swo
+.idea/
+conf/lb/common/env-conf.json
+conf/lb/common/*.bak
+
+html/nav/
+html/ssl/
+html/maintain
+

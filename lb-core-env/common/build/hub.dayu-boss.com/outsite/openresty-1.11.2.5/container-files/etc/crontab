@@ -1,0 +1,26 @@
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+58 23 * * * root /usr/bin/cut-ngx-log.sh
+*/3 * * * * root flock -xn /var/run/fetch.domains -c 'source /etc/environment && python /usr/local/openresty/nginx/script/py/FetchData.py domains| tee -a /var/logs/fetch_data.log'
+*/4 * * * * root flock -xn /var/run/fetch.site_info -c 'source /etc/environment && python /usr/local/openresty/nginx/script/py/FetchData.py site_info| tee -a /var/logs/fetch_data.log'
+*/5 * * * * root flock -xn /var/run/fetch.rcenter_white_list -c 'source /etc/environment && python /usr/local/openresty/nginx/script/py/FetchData.py rcenter_white_list| tee -a /var/logs/fetch_data.log'
+*/6 * * * * root flock -xn /var/run/fetch.ftl_white_list -c 'source /etc/environment && python /usr/local/openresty/nginx/script/py/FetchData.py ftl_white_list| tee -a /var/logs/fetch_data.log'
+
+# 防止crond意外终止/重启，没释放锁文件导致同步失败
+10 23 * * * root rm -f /var/run/fetch.domains
+10 23 * * * root rm -f /var/run/fetch.site_info
+10 23 * * * root rm -f /var/run/fetch.rcenter_white_list
+10 23 * * * root rm -f /var/run/fetch.ftl_white_list

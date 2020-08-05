@@ -1,0 +1,4 @@
+---
+
+dependencies:
+  - role: 50-install-k8s

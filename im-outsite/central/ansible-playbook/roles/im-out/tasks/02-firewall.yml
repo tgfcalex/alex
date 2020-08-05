@@ -1,0 +1,24 @@
+---
+
+# 安装firewalld
+- name: "Install firewalld"
+  yum:
+    name: firewalld
+    state: latest
+
+#确保服务启动
+- name: "Ensure firewalld is started and enabled at boot"
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+#设置firewalld的默认区域
+- name: "Set work as default policy"
+  command: firewall-cmd --set-default-zone=work
+  notify: reload firewalld
+
+# 初始 zone 配置
+- name: "copy work.xml for firewalld"
+  copy: src=work.xml dest=/etc/firewalld/zones/work.xml mode=0600
+  notify: reload firewalld

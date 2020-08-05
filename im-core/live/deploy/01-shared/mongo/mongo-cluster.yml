@@ -1,0 +1,259 @@
+version: '3.6'
+services:
+  mongors1n1:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard1 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard1:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        # 指定在服务器 manager 上启动
+        constraints:
+          - node.labels.mogo ==manager
+  mongors2n1:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard2 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard2:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==manager
+  mongors3n1:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard3 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard3:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==manager
+  mongors1n2:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard1 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard1:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker1
+  mongors2n2:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard2 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard2:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker1
+  mongors3n2:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard3 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard3:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker1
+  mongors1n3:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard1 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard1:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker2
+  mongors2n3:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard2 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard2:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker2
+  mongors3n3:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard3 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/shard3:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker2
+  cfg1:
+    image: mongo:4.0.2
+    command: mongod --configsvr --replSet cfgrs --smallfiles --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/config:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==manager
+  cfg2:
+    image: mongo:4.0.2
+    command: mongod --configsvr --replSet cfgrs --smallfiles --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/config:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker1
+  cfg3:
+    image: mongo:4.0.2
+    command: mongod --configsvr --replSet cfgrs --smallfiles --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /root/mongo/config:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker2
+  mongos1:
+    image: mongo:4.0.2
+    # mongo 3.6 版默认绑定IP为 127.0.0.1，此处绑定 0.0.0.0 是允许其他容器或主机可以访问
+    command: mongos --configdb cfgrs/cfg1:27017,cfg2:27017,cfg3:27017 --bind_ip 0.0.0.0 --port 27017
+    networks:
+      - mongo
+    # 映射宿主机的 27017 端口
+    ports:
+      - 27017:27017
+    volumes:
+      - /etc/localtime:/etc/localtime
+    depends_on:
+      - cfg1
+      - cfg2
+      - cfg3
+    deploy:
+      restart_policy:
+        condition: on-failure
+      # 在集群内的每一台服务器上都启动一个容器
+      # mode: global
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==manager
+  mongos2:
+    image: mongo:4.0.2
+    # mongo 3.6 版默认绑定IP为 127.0.0.1，此处绑定 0.0.0.0 是允许其他容器或主机可以访问
+    command: mongos --configdb cfgrs/cfg1:27017,cfg2:27017,cfg3:27017 --bind_ip 0.0.0.0 --port 27017
+    networks:
+      - mongo
+    # 映射宿主机的 27017 端口
+    ports:
+      - 27017:27017
+    volumes:
+      - /etc/localtime:/etc/localtime
+    depends_on:
+      - cfg1
+      - cfg2
+      - cfg3
+    deploy:
+      restart_policy:
+        condition: on-failure
+      # 在集群内的每一台服务器上都启动一个容器
+      # mode: global
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker1
+  mongos3:
+    image: mongo:4.0.2
+    # mongo 3.6 版默认绑定IP为 127.0.0.1，此处绑定 0.0.0.0 是允许其他容器或主机可以访问
+    command: mongos --configdb cfgrs/cfg1:27017,cfg2:27017,cfg3:27017 --bind_ip 0.0.0.0 --port 27017
+    networks:
+      - mongo
+    # 映射宿主机的 27017 端口
+    ports:
+      - 27017:27017
+    volumes:
+      - /etc/localtime:/etc/localtime
+    depends_on:
+      - cfg1
+      - cfg2
+      - cfg3
+    deploy:
+      restart_policy:
+        condition: on-failure
+      # 在集群内的每一台服务器上都启动一个容器
+      # mode: global
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.mogo ==worker2
+
+networks:
+  mongo:
+    external: true

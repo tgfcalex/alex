@@ -1,0 +1,17 @@
+
+---
+
+- name: sysctl-load
+  shell: sudo sysctl --system
+
+
+- name: source bashrc
+  shell: source /etc/bashrc
+
+- name: source profile
+  shell: source /etc/profile
+
+- name: source ctn
+  shell: source /etc/bash_completion.d/ctn
+
+

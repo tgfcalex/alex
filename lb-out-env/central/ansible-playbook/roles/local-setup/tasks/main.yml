@@ -1,0 +1,61 @@
+---
+
+######################################################### cfssl ##################################################
+# 声明判断条件
+- name: "Condition: {{ local_setup_bin }}/cfssl"
+  stat: path="{{ local_setup_bin }}/cfssl"
+  register: cfssl_file
+  connection: local
+  become: no
+
+# 下载 cfssl cfssljson cfssl-certinfo 到本机
+- include: ca-install.yml
+  connection: local
+  become: no
+  when: not cfssl_file.stat.exists
+
+######################################################### etcd ##################################################
+
+- name: "Get tmp_etcd_version"
+  shell: "{{ local_setup_bin }}/etcd --version | awk -F: '/etcd Version/{print $2}'| tr -d ' '"
+  register: tmp_etcd_version
+  ignore_errors: True
+  connection: local
+  become: no
+
+- name: "Condition: {{ local_setup_bin }}/etcd"
+  stat: path="{{ local_setup_bin }}/etcd"
+  register: etcd_file
+  connection: local
+  become: no
+
+- name: "Check: {{ local_setup_bin }}/etcd"
+  debug:
+    msg:
+    - "etcd_file.stat.exists: {{ etcd_file.stat.exists }}"
+    - "tmp_etcd_version.stdout: {{ tmp_etcd_version.stdout }}"
+
+# 下载 etcd etcdctl 到本机
+- include: etcd-install-github-release.yml
+  connection: local
+  become: no
+  when: ( not etcd_file.stat.exists ) and ( tmp_etcd_version.stdout  != ETCD_VERSION )
+
+######################################################### flanneld ##################################################
+# 声明判断条件
+- name: "Condition: {{ local_setup_bin }}/flanneld"
+  stat: path="{{ local_setup_bin }}/flanneld"
+  register: flanneld_file
+  connection: local
+  become: no
+
+- name: "Check: {{ local_setup_bin }}/flanneld"
+  debug:
+    msg:
+    - "flanneld_file.stat.exists: {{ flanneld_file.stat.exists }}"
+
+# 下载 flanneld 到本机
+- include: flannel-install-github-release.yml
+  connection: local
+  become: no
+  when: not flanneld_file.stat.exists

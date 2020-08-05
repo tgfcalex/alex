@@ -1,0 +1,12 @@
+---
+
+#改变selinux状态为disable
+- name: 将selinu修改为disabled，提示需要重启生效
+  selinux:
+    policy: targeted
+    state: disabled
+
+#临时禁用
+- name: 临时设置selinux关闭,如果关闭，忽略
+  shell: setenforce 0
+  ignore_errors: True

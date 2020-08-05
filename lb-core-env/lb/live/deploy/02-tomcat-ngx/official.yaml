@@ -1,0 +1,76 @@
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  official-1:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: official-1
+    environment:
+        - JAVA_OPT=-Xms2500m -Xmx2500m -Xmn2g
+        - idc=A
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/apps/official:/usr/local/tomcat/webapps/official
+      - /var/lb/logs/official:/usr/local/tomcat/logs/
+
+  official-2:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: official-2
+    environment:
+        - JAVA_OPT=-Xms2500m -Xmx2500m -Xmn2g
+        - idc=A
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 2]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/apps/official:/usr/local/tomcat/webapps/official
+      - /var/lb/logs/official:/usr/local/tomcat/logs/
+
+  official-3:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: official-3
+    environment:
+        - JAVA_OPT=-Xms2500m -Xmx2500m -Xmn2g
+        - idc=A
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 3]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/apps/official:/usr/local/tomcat/webapps/official
+      - /var/lb/logs/official:/usr/local/tomcat/logs/

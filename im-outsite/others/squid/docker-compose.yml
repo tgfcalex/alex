@@ -1,0 +1,27 @@
+version: "3"
+
+networks:
+  squid_net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.240.240.0/24
+
+services:
+
+  squid:
+    build: ./
+    image: squid:centos7
+    hostname: squid
+    container_name: squid
+    restart: always
+    networks:
+      - squid_net
+    ports:
+      - "10080:10080"
+    volumes:
+      - "/var/log/squid/:/var/log/squid/"
+      - "/var/spool/squid/:/var/spool/squid/"

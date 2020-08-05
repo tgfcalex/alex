@@ -1,0 +1,51 @@
+---
+
+############## Creat user ##############################
+- name: Creat user
+  include: 00-creat-user.yml
+  tags: configure
+
+############## Configure sshd ##########################
+- name: Configure sshd
+  include: 01-sshd.yml
+  tags: configure
+
+############## Set firewall ############################
+- name: Set firewall
+  include: 02-firewall.yml
+  tags: configure
+
+############## Set ssh-keys ############################
+- name: Set ssh-keys 
+  include: 03-ssh-keys.yml
+  tags: configure
+
+############## Cut-ngx-log #############################
+- name: Cut nginx log
+  include: 04-cut-ngx-log.yml
+  tags: configure
+
+############## Crontab file ############################
+- name: Crontab file
+  include: 05-crontab.yml
+  tags: configure  
+
+############## Rsync file ##############################
+#配置rsyncd.conf
+- name: "copy rsyncd.conf as default file"
+  copy: src=rsyncd.conf dest=/etc/rsyncd.conf mode=0644
+
+#确保服务启动
+- name: "Ensure rsyncd is started and enabled at boot"
+  systemd:
+    name: rsyncd
+    state: started
+    enabled: yes
+
+#创建site-out目录和static目录
+- name: "Creat site-out rcenter directory"
+  shell: mkdir -p /var/im/site-out;mkdir -p /var/im/static  
+
+          
+- name: "------- flush_handlers -------"
+  meta: flush_handlers

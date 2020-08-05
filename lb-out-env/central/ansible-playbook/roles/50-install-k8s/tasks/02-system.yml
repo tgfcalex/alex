@@ -1,0 +1,61 @@
+---
+
+#- name: Enable IPv6 Forwarding (1/2)
+#  sysctl:
+#    name: net.bridge.bridge-nf-call-ip6tables
+#    value: '1'
+#    state: present
+#
+#- name: Enable IP Forwarding (2/2)
+#  sysctl:
+#    name: net.bridge.bridge-nf-call-iptables
+#    value: '1'
+#    state: present
+
+- name: Copy to /etc/sysconfig/modules/br_netfilter.modules
+  copy: src=etc/sysconfig/modules/br_netfilter.modules dest=/etc/sysconfig/modules/br_netfilter.modules mode=0755
+  notify: ["modprobe br_netfilter"]
+
+- name: Copy to /etc/sysconfig/modules/ip_vs.modules
+  copy: src=etc/sysconfig/modules/ip_vs.modules dest=/etc/sysconfig/modules/ip_vs.modules mode=0755
+  notify: ["modprobe ip_vs"]
+
+- name: Copy to /etc/sysctl.d/kubernetes.conf
+  copy: src=etc/sysctl.d/kubernetes.conf dest=/etc/sysctl.d/kubernetes.conf mode=0644
+  notify: ["sysctl-load"]
+
+- name: Copy to /usr/lib/firewalld/services/kube-master.xml
+  copy: src=usr/lib/firewalld/services/kube-master.xml dest=/usr/lib/firewalld/services/kube-master.xml mode=0644
+
+- name: Copy to /usr/lib/firewalld/services/kube-node.xml
+  copy: src=usr/lib/firewalld/services/kube-node.xml dest=/usr/lib/firewalld/services/kube-node.xml mode=0644
+
+- name: Set timezone to Asia/Shanghai
+  timezone:
+    name: Asia/Shanghai
+  notify: ["Restarted rsyslog service", "Restarted crond service"]
+
+- name: Starting and Enabling chronyd service
+  systemd:
+    name: chronyd
+    state: started
+    enabled: yes
+
+- name: Stopped and Disabled systemd service
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items:
+    - postfix
+    - dnsmasq
+  ignore_errors: True
+
+- name: Stopped and Disabled firewalld service
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+  ignore_errors: True
+  when: not use_firewalld
+  notify: ["Restarted docker service"]

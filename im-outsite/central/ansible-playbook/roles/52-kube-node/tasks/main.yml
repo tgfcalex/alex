@@ -1,0 +1,21 @@
+---
+
+- debug:
+    msg:
+    - --------------------------------------------------------------------------------------------------------------
+    - ------------------------------------------------- Begin ------------------------------------------------------
+    - --------------------------------------------------------------------------------------------------------------
+
+- name: "Enabling kubelet service"
+  service:
+   name: kubelet
+   enabled: yes
+#   state: started
+
+- include: firewalld.yml
+  tags: configure
+  when: use_firewalld
+
+#- include: iptables.yml
+#  when: not has_firewalld and has_iptables
+#  tags: configure

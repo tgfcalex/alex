@@ -1,0 +1,4 @@
+---
+#crontab file
+- name: 拷贝crontab文件，设置计划任务
+  copy: src=crontab dest=/etc/crontab

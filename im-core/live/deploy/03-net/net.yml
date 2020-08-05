@@ -1,0 +1,19 @@
+version: "3.3"
+
+networks:
+  im_net:
+    external: true
+
+services:
+
+  rd-1:
+    image: redis:5.0.7
+    networks:
+      - im_net
+    hostname: rd-1
+    deploy:
+      placement:
+        # 部署在指定的节点
+        constraints:  [node.labels.net == net]
+      restart_policy:
+        condition: on-failure

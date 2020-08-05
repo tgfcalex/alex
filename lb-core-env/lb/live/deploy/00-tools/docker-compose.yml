@@ -1,0 +1,26 @@
+# Usage : docker-compose up
+# 部署lc的健康监测
+version: "2"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  tool-out:
+    image: hub.dayu-boss.com/core/openresty
+    restart: always
+    hostname: tool-out
+    container_name: tool-out
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5700:5700"
+    mem_limit: 512m
+    networks:
+      - lbnet
+    volumes:
+      - /var/lb/conf/tool-out/:/usr/local/openresty/nginx/conf/
+      - /var/lb/logs/tool-out/:/data/nginx/logs/
+

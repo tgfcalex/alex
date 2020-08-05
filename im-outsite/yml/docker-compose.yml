@@ -1,0 +1,202 @@
+version: '3.5'
+networks:
+  net:
+    name: net
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.8.8.0/24
+
+services:
+
+  redis:
+    build: common/redis
+    image: redis:site
+    hostname: redis
+    container_name: redis
+    restart: always
+    sysctls:
+      - net.core.somaxconn=32768
+    networks:
+      net:
+        ipv4_address: 10.8.8.10
+    ports:
+     - "127.0.0.1:6379:6379"
+    volumes:
+      - /var/run/redis/:/var/run/redis/
+      - /etc/localtime:/etc/localtime:ro
+
+  python:
+    build: common/python
+    image: python:site
+    hostname: python
+    container_name: python
+    restart: always
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+    env_file:
+      .env
+    networks:
+      net:
+        ipv4_address: 10.8.8.20
+    depends_on:
+      - redis
+    volumes:
+      - /var/run/redis/:/var/run/redis/
+      - /etc/localtime:/etc/localtime:ro
+      - ../script/py3:/script/
+
+  sync:
+    image: ${NGX_IMG}
+    hostname: $HOSTNAME
+    container_name: ${composesrv}
+    restart: always
+    env_file:
+      .env
+    networks:
+      net:
+        ipv4_address: 10.8.8.30
+#    depends_on:
+#      - redis
+#      - python
+    ports:
+      - "80:80"
+      - "443:443"
+      - "88:88"
+    volumes:
+      - /var/run/redis/:/var/run/redis/
+      - /var/im/ssl/:/var/im/ssl/
+      - /var/im/site-out/conf/:/usr/local/openresty/nginx/conf/
+      - /var/im/site-out/script/:/usr/local/openresty/nginx/script/
+      - /var/im/site-out/html/:/usr/local/openresty/nginx/html/
+      - /var/im/static/:/var/im/static/:ro
+      - /var/im/conf/:/var/im/conf/
+      - /var/im/data/:/var/data/
+      - /var/im/logs/:/var/logs/
+      - /tmp/proxy-cache:/tmp/proxy-cache
+
+
+
+  site:
+    image: ${NGX_IMG}
+    hostname: $HOSTNAME
+    container_name: ${composesrv}
+    restart: always
+    env_file:
+      .env
+    networks:
+      net:
+        ipv4_address: 10.8.8.30
+#    depends_on:
+#      - redis
+#      - python
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8443:8443"
+    volumes:
+      - /var/run/redis/:/var/run/redis/
+      - /var/im/ssl/:/var/im/ssl/
+      - /var/im/site-out/conf/:/usr/local/openresty/nginx/conf/
+      - /var/im/site-out/script/:/usr/local/openresty/nginx/script/
+      - /var/im/site-out/html/:/usr/local/openresty/nginx/html/
+      - /var/im/static/:/var/im/static/:ro
+      - /var/im/conf/:/var/im/conf/
+      - /var/im/data/:/var/data/
+      - /var/im/logs/:/var/logs/
+      - /tmp/proxy-cache:/tmp/proxy-cache
+
+  adm:
+    image: ${NGX_IMG}
+    hostname: $HOSTNAME
+    container_name: ${composesrv}
+    restart: always
+    env_file:
+      .env
+    networks:
+      net:
+        ipv4_address: 10.8.8.32
+#    depends_on:
+#      - redis
+#      - python
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8443:8443"
+    volumes:
+      - /var/run/redis/:/var/run/redis/
+      - /var/im/ssl/:/var/im/ssl/
+      - /var/im/site-out/conf/:/usr/local/openresty/nginx/conf/
+      - /var/im/site-out/script/:/usr/local/openresty/nginx/script/
+      - /var/im/site-out/html/:/usr/local/openresty/nginx/html/
+      - /var/im/static/:/var/im/static/:ro
+      - /var/im/conf/:/var/im/conf/
+      - /var/im/data/:/var/data/
+      - /var/im/logs/:/var/logs/
+      - /tmp/proxy-cache:/tmp/proxy-cache
+
+  api:
+    image: ${NGX_IMG}
+    hostname: $HOSTNAME
+    container_name: ${composesrv}
+    restart: always
+    env_file:
+      .env
+    networks:
+      net:
+        ipv4_address: 10.8.8.31
+#    depends_on:
+#      - redis
+#      - python
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8443:8443"
+    volumes:
+      - /var/run/redis/:/var/run/redis/
+      - /var/im/ssl/:/var/im/ssl/
+      - /var/im/site-out/conf/:/usr/local/openresty/nginx/conf/
+      - /var/im/site-out/script/:/usr/local/openresty/nginx/script/
+      - /var/im/site-out/html/:/usr/local/openresty/nginx/html/
+      - /var/im/static/:/var/im/static/:ro
+      - /var/im/conf/:/var/im/conf/
+      - /var/im/data/:/var/data/
+      - /var/im/logs/:/var/logs/
+      - /tmp/proxy-cache:/tmp/proxy-cache
+
+
+  test:
+    image: ${NGX_IMG}
+    hostname: $HOSTNAME
+    container_name: ${composesrv}
+    restart: always
+    env_file:
+      .env
+    networks:
+      net:
+        ipv4_address: 10.8.8.32
+    depends_on:
+      - redis
+      - python
+    ports:
+      - "80:80"
+      - "88:88"
+      - "443:443"
+      - "1388:1388"
+      - "8071:8071"
+      - "8072:8072"
+      - "8172:8172"
+    volumes:
+      - /var/run/redis/:/var/run/redis/
+      - /var/lb/ssl/:/var/lb/ssl/
+      - /var/lb/site-out/conf/:/usr/local/openresty/nginx/conf/
+      - /var/lb/site-out/script/:/usr/local/openresty/nginx/script/
+      - /var/lb/site-out/html/:/usr/local/openresty/nginx/html/
+      - /var/lb/static/:/var/lb/static/:ro
+      - /var/lb/conf/:/var/lb/conf/
+      - /var/lb/data/:/var/data/
+      - /var/lb/logs/:/var/logs/
+

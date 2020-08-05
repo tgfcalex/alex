@@ -1,0 +1,7 @@
+---
+
+- name: copy  vimfiles
+  copy: src=vimfiles/ dest=/usr/share/vim/vimfiles/
+
+- name: copy vimrc
+  copy: src=vimrc dest=/etc/vimrc mode=0644

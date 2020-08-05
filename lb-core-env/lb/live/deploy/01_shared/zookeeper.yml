@@ -1,0 +1,110 @@
+# Usage : docker stack deploy -c zookeeper.yaml zk
+
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+  zook-1:
+    image: hub.dayu-boss.com/core/zookeeper
+    networks:
+        - lbnet
+    hostname: zook-1
+    environment:
+        - MYID=1
+        - ZOO_SERVERS=server.1=zook-1:2888:3888 server.2=zook-2:2888:3888 server.3=zook-3:2888:3888 server.4=zook-4:2888:3888 server.5=zook-5:2888:3888  server.6=zook-6:2888:3888
+    volumes:
+        - /var/lb/data/zookeeper/zook-1:/data/zookeeper/data
+        - /var/lb/logs/zookeeper/zook-1:/data/zookeeper/log
+    deploy:
+        placement:
+          constraints:  [node.labels.zk == 1]
+        restart_policy:
+          condition: on-failure
+
+  zook-2:
+    image: hub.dayu-boss.com/core/zookeeper
+    networks:
+        - lbnet
+    hostname: zook-2
+    environment:
+        - MYID=2
+        - ZOO_SERVERS=server.1=zook-1:2888:3888 server.2=zook-2:2888:3888 server.3=zook-3:2888:3888 server.4=zook-4:2888:3888 server.5=zook-5:2888:3888  server.6=zook-6:2888:3888
+    volumes:
+        - /var/lb/data/zookeeper/zook-2:/data/zookeeper/data
+        - /var/lb/logs/zookeeper/zook-2:/data/zookeeper/log
+    deploy:
+        placement:
+          constraints:  [node.labels.zk == 2]
+        restart_policy:
+          condition: on-failure
+
+  zook-3:
+    image: hub.dayu-boss.com/core/zookeeper
+    networks:
+        - lbnet
+    hostname: zook-3
+    environment:
+        - MYID=3
+        - ZOO_SERVERS=server.1=zook-1:2888:3888 server.2=zook-2:2888:3888 server.3=zook-3:2888:3888 server.4=zook-4:2888:3888 server.5=zook-5:2888:3888  server.6=zook-6:2888:3888
+    volumes:
+        - /var/lb/data/zookeeper/zook-3:/data/zookeeper/data
+        - /var/lb/logs/zookeeper/zook-3:/data/zookeeper/log
+    deploy:
+        placement:
+          constraints:  [node.labels.zk == 3]
+        restart_policy:
+          condition: on-failure
+
+  zook-4:
+    image: hub.dayu-boss.com/core/zookeeper
+    networks:
+        - lbnet
+    hostname: zook-4
+    environment:
+        - MYID=4
+        - ZOO_SERVERS=server.1=zook-1:2888:3888 server.2=zook-2:2888:3888 server.3=zook-3:2888:3888 server.4=zook-4:2888:3888 server.5=zook-5:2888:3888  server.6=zook-6:2888:3888
+    volumes:
+        - /var/lb/data/zookeeper/zook-4:/data/zookeeper/data
+        - /var/lb/logs/zookeeper/zook-4:/data/zookeeper/log
+    deploy:
+        placement:
+          constraints:  [node.labels.zk == 3]
+        restart_policy:
+          condition: on-failure
+
+  zook-5:
+    image: hub.dayu-boss.com/core/zookeeper
+    networks:
+        - lbnet
+    hostname: zook-5
+    environment:
+        - MYID=5
+        - ZOO_SERVERS=server.1=zook-1:2888:3888 server.2=zook-2:2888:3888 server.3=zook-3:2888:3888 server.4=zook-4:2888:3888 server.5=zook-5:2888:3888  server.6=zook-6:2888:3888
+    volumes:
+        - /var/lb/data/zookeeper/zook-5:/data/zookeeper/data
+        - /var/lb/logs/zookeeper/zook-5:/data/zookeeper/log
+    deploy:
+        placement:
+          constraints:  [node.labels.zk == 2]
+        restart_policy:
+          condition: on-failure
+
+  zook-6:
+    image: hub.dayu-boss.com/core/zookeeper
+    networks:
+        - lbnet
+    hostname: zook-6
+    environment:
+        - MYID=6
+        - ZOO_SERVERS=server.1=zook-1:2888:3888 server.2=zook-2:2888:3888 server.3=zook-3:2888:3888 server.4=zook-4:2888:3888 server.5=zook-5:2888:3888  server.6=zook-6:2888:3888
+    volumes:
+        - /var/lb/data/zookeeper/zook-6:/data/zookeeper/data
+        - /var/lb/logs/zookeeper/zook-6:/data/zookeeper/log
+    deploy:
+        placement:
+          constraints:  [node.labels.zk == 1]
+        restart_policy:
+          condition: on-failure

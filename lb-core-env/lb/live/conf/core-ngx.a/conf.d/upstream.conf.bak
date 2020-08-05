@@ -1,0 +1,51 @@
+# hall
+upstream lb-hall {
+    sticky;
+    server lb_hall-1:8080 max_fails=1 fail_timeout=10s weight=1;
+    server lb_hall-2:8080 max_fails=1 fail_timeout=10s weight=1;
+    server lb_hall-3:8080 max_fails=1 fail_timeout=10s weight=1;
+    keepalive 16;
+    check interval=3000 rise=1 fall=3 timeout=2000 type=http;
+    check_http_send "HEAD /hall/health/check.html HTTP/1.0\r\nUser-Agent:check\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+# manager
+upstream lb-manager {
+    sticky;
+    server lb_manager-1:8080 max_fails=1 fail_timeout=10s weight=1;
+    server lb_manager-2:8080 max_fails=1 fail_timeout=10s weight=1;
+    server lb_manager-3:8080 max_fails=1 fail_timeout=10s weight=1;
+    keepalive 16;
+    check interval=3000 rise=1 fall=3 timeout=2000 type=http;
+    check_http_send "HEAD /manager/health/check.html HTTP/1.0\r\nUser-Agent:check\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+# mdcenter
+upstream lb-mdcenter {
+    sticky;
+    server lb_mdcenter-1:8080 max_fails=1 fail_timeout=10s weight=1;
+    server lb_mdcenter-2:8080 max_fails=1 fail_timeout=10s weight=1;
+    server lb_mdcenter-3:8080 max_fails=1 fail_timeout=10s weight=1;
+    keepalive 16;
+    check interval=3000 rise=1 fall=3 timeout=2000 type=http;
+    check_http_send "HEAD /mdcenter/health/check.html HTTP/1.0\r\nUser-Agent:check\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+# api
+upstream lb-api {
+    sticky;
+    server lb_api-1:8080 max_fails=1 fail_timeout=10s weight=1;
+    server lb_api-2:8080 max_fails=1 fail_timeout=10s weight=1;
+    server lb_api-3:8080 max_fails=1 fail_timeout=10s weight=1;
+    keepalive 16;
+    check interval=3000 rise=1 fall=3 timeout=2000 type=http;
+    check_http_send "HEAD /api/health/check.html HTTP/1.0\r\nUser-Agent:check\r\n\r\n";
+    check_http_expect_alive http_2xx http_3xx;
+}
+#fserver
+upstream lb-fserver {
+    sticky;
+    server 10.10.4.1:12280 max_fails=1 fail_timeout=10s weight=1;
+    server 10.10.4.2:12280 max_fails=1 fail_timeout=10s weight=1;
+    keepalive 16;
+}

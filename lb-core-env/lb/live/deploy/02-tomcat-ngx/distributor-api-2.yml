@@ -1,0 +1,59 @@
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  distributor-api-2:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: distributor-api-2
+    environment:
+        - JAVA_OPT=-Xms2500m -Xmx2500m -Xmn2g
+        - idc=A
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 2]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/data/mq/distributor-api-rdb:/var/data/mq/rdb
+      - /var/lb/apps/distributor-api:/usr/local/tomcat/webapps/distributor-api
+      - /var/lb/logs/distributor-api:/usr/local/tomcat/logs/
+
+  merchant-api-2:
+    image: hub.dayu-boss.com/core/tomcat
+    networks:
+      - lbnet
+    hostname: merchant-api-2
+    environment:
+        - JAVA_OPT=-Xms2500m -Xmx2500m -Xmn2g
+        - idc=A
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:172.0.10.139"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 2]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/data/mq/merchant-api-rdb:/var/data/mq/rdb
+      - /var/lb/apps/merchant-api:/usr/local/tomcat/webapps/merchant-api
+      - /var/lb/logs/merchant-api:/usr/local/tomcat/logs/

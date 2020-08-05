@@ -1,0 +1,131 @@
+{
+  "core_idc_1": {
+    "site_ids": "0,100,101,102,107,110,123,125,126,127,128,129",
+    "site": {
+      "is_maintenance": "false",
+      "is_force_ssl": "true",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30",
+      "is_filter_html": "true",
+      "is_filter_rcenter": "true",
+      "is_check_access_times": "true",
+      "except": [
+        {
+          "site_ids": "0",
+          "is_force_ssl": "false"
+        }
+      ]
+    },
+    "adm": {
+      "is_maintenance": "false",
+      "is_force_ssl": "true",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "deny_city": "珠海",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30",
+      "except": [
+        {
+          "site_ids": "0",
+          "is_force_ssl": "false"
+        }
+      ]
+    },
+    "api":{
+      "is_maintenance": "false",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "deny_city": "珠海",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30"
+    }
+  },
+  "core_idc_16": {
+    "site_ids": "103",
+    "site": {
+      "is_maintenance": "false",
+      "is_force_ssl": "true",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "deny_city": "珠海",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30",
+      "is_filter_html": "true",
+      "is_filter_rcenter": "true",
+      "is_check_access_times": "true"
+    },
+    "adm": {
+      "is_maintenance": "false",
+      "is_force_ssl": "true",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "deny_city": "珠海",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30"
+    },
+    "api":{
+      "is_maintenance": "false",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "deny_city": "珠海",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30"
+    }
+  },
+  "by_domain": {
+    "site": {
+      "domains": "tt.bet,bak.tt.bet,test.tt.bet,longtou555.com,bak.longtou555.com,test.longtou555.com,testgame.longtoubet.com",
+      "core_idc_no": "1",
+      "is_maintenance": "false",
+      "is_force_ssl": "true",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "deny_city": "珠海",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30",
+      "is_filter_html": "true",
+      "is_filter_rcenter": "true",
+      "is_check_access_times": "true",
+      "except": [
+        {
+          "domains": "longtou555.com,tt.bet",
+          "core_idc_no": "1"
+        },
+        {
+          "domains": "testgame.longtoubet.com",
+          "core_idc_no": "16"
+        }
+      ]
+    },
+    "adm": {
+      "domains": "test1.lb-boss.com,boss-tmp.tt.bet,lb-boss.com,bak.lb-boss.com,test.lb-boss.com,cof6.com,bak.cof6.com,test.cof6.com,boss-tmp.tt.ber,testadmin.h107.longtoubet.com,testd107.longtoubet.com",
+      "core_idc_no": "1",
+      "is_maintenance": "false",
+      "is_force_ssl": "true",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "deny_city": "珠海",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30",
+      "except": [
+        {
+          "domains": "lb-boss.com,cof6.com",
+          "core_idc_no": "1"
+        },
+        {
+          "domains": "test1.lb-boss.com,testadmin.h107.longtoubet.com,testd107.longtoubet.com",
+          "core_idc_no": "16"
+        }
+      ]
+    },
+    "api": {
+      "domains": "hongtuapi.sports-hg.com,shanghu01api.sports-hg.com,testshapi.sports-hg.com,testapi.longtoubet.com,api.longtoubet.com",
+      "core_idc_no": "1",
+      "is_maintenance": "false",
+      "is_check_ip_white": "true",
+      "deny_countries": "澳门",
+      "deny_city": "珠海",
+      "ip_white_list": "127.0.0.1,210.4.101.241,122.53.102.108,58.64.133.193,47.90.83.30",
+      "except": [
+        {
+          "domains": "testapi.longtoubet.com",
+          "core_idc_no": "16"
+        }
+     ]
+    }
+  }
+}

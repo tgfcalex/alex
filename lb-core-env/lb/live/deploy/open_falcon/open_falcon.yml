@@ -1,0 +1,90 @@
+version: "3.3"
+
+services:
+  open_falcon:
+    image: openfalcon/falcon-plus:v0.2.1
+    hostname: falcon
+    networks:
+      lbnet:
+    environment:
+      - MYSQL_PORT=root:falcon_mysql123@tcp(falcon_mysql:3306)
+      - REDIS_PORT=falcon_redis:6379
+    ports:
+      - 8080:8080 
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.monitor == true]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/open-falcon/data:/open-falcon/data
+      - /var/open-falcon/logs:/open-falcon/logs
+    depends_on:
+      - falcon_mysql
+      - falcon_redis
+
+  falcon_mysql:
+    image: mysql:5.7
+    hostname: mysql
+    networks:
+      lbnet:
+    volumes:
+      - /opt/open-falcon/mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql123
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.monitor == true]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+
+  falcon_redis:
+    image: redis:4-alpine3.8
+    hostname: redis
+    networks:
+      lbnet:
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.monitor == true]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+
+#  dashboard:
+#    image: openfalcon/falcon-dashboard:v0.2.1
+#    container_name: dashboard
+#    hostname: dashboard
+#    ports:
+#      - 8081:8081
+#    depends_on:
+#      - open_falcon
+#    environment:
+#      - API_ADDR=http://api.falcon:8080/api/v1
+#      - PORTAL_DB_HOST=falcon_mysql
+#      - PORTAL_DB_PORT=3306
+#      - PORTAL_DB_USER=root
+#      - PORTAL_DB_PASS=mysql123
+#      - PORTAL_DB_NAME=falcon_portal
+#      - ALARM_DB_HOST=falcon_mysql
+#      - ALARM_DB_PORT=3306
+#      - ALARM_DB_USER=root
+#      - ALARM_DB_PASS=mysql123
+#      - ALARM_DB_NAME=alarms
+#    networks:
+#      work_net:
+#    command: ["./control startfg"]
+
+networks:
+  lbnet:
+    external: true

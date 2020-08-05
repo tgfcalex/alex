@@ -1,0 +1,22 @@
+#open-falcon使用的ngx
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+services:
+  falcon-ngx:
+    image: hub.dayu-boss.com/core/openresty
+    networks:
+      lbnet:
+        aliases:
+          - falcon-plus
+    hostname: falcon-ngx
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints: [node.labels.monitor == true]
+    volumes:
+      - /var/lb/conf/falcon-ngx/:/usr/local/nginx/conf/
+      - /var/lb/logs/falcon-ngx/:/data/nginx/logs/

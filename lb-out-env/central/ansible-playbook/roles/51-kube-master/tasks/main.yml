@@ -1,0 +1,72 @@
+---
+
+- debug:
+    msg:
+    - --------------------------------------------------------------------------------------------------------------
+    - ------------------------------------------------- Begin ------------------------------------------------------
+    - --------------------------------------------------------------------------------------------------------------
+
+- name: "Enabling kubelet service"
+  service:
+   name: kubelet
+   enabled: yes
+#   state: started
+
+- include: firewalld.yml
+  tags: configure
+  when: use_firewalld
+
+#- include: iptables.yml
+#  when: not has_firewalld and has_iptables
+#  tags: configure
+
+- name: "Get kubeadm_statu"
+  shell: kubeadm token create --print-join-command
+  register: kubeadm_statu
+  ignore_errors: True
+
+- debug:
+    msg:
+      - "{{ kubeadm_statu.stdout }}"
+
+- include: kubeadm_init.yml
+  when: kubeadm_statu.rc != 0
+
+
+# --------------------------------------
+- name: "Ensure group 'kube' exists"
+  group:
+    name: kube
+    state: present
+    gid: 6443
+
+- name: "Add the user 'kube' with a specific uid and a primary group of 'kube'"
+  user:
+    name: kube
+    comment: Kubernetes
+    uid: 6443
+    groups:
+    - kube
+    - docker
+
+- name: "Ensure /home/kube/.kube/ exist"
+  file:
+    path: /home/kube/.kube/
+    mode: 0755
+    state: directory
+    owner: kube
+    group: kube
+#
+#- name: Grant user 'kube' read & write to /etc/kubernetes/admin.conf
+#  acl:
+#    path:  /etc/kubernetes/admin.conf
+#    entity: kube
+#    etype: user
+#    permissions: rw
+#    state: present
+#
+#- name: Link /etc/kubernetes/admin.conf for 'kube'
+#  file:
+#    src: /etc/kubernetes/admin.conf
+#    dest: /home/kube/.kube/config
+#    state: link

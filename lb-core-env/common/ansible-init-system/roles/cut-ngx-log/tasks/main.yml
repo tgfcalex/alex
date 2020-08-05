@@ -1,0 +1,4 @@
+---
+
+- name: "nginx的日志切割"
+  copy: src=cut-ngx-log.sh dest=/usr/local/bin/cut-ngx-log.sh mode=0755

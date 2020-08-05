@@ -1,0 +1,10 @@
+---
+
+- name: "判断是否安装zabbix-agent"
+  shell: rpm -qa | grep zabbix-agent &>/dev/null
+  register: result
+  ignore_errors: True
+
+- name: Install zabbix-agent
+  shell: rpm -ivh http://repo.zabbix.com/zabbix/4.0/rhel/7/x86_64/zabbix-agent-4.0.0-2.el7.x86_64.rpm
+  when: result is failed

@@ -1,0 +1,42 @@
+---
+
+- name: "Ensure /root/.kube/ exist"
+  file:
+    path: /root/.kube/
+    mode: 0755
+    state: directory
+
+- name: "Link '/etc/kubernetes/admin.conf' to '/root/.kube/config'"
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    state: link
+    force: yes
+    follow: False
+
+- name: "Add file /root/kubeadm_init.yml"
+  template:
+    src: kubeadm_init.yml.j2
+    dest: /root/kubeadm_init.yml
+
+#- name: "Add file /root/kube-flannel.yml"
+#  get_url:
+#    url: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+#    dest: /root/kube-flannel.yml
+
+- name: "COPY /root/kube-flannel.yml"
+  copy:
+    src: kube-flannel.yml
+    dest: /root/kube-flannel.yml
+    mode: 0644
+
+- name: "Pull inamges for kubeadm"
+  shell: kubeadm config images pull
+
+- name: "Kubeadm init"
+  shell: kubeadm init --config /root/kubeadm_init.yml
+
+
+- name: "Install flannel"
+  shell: kubectl apply -f /root/kube-flannel.yml
+

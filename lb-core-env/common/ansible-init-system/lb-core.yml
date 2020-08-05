@@ -1,0 +1,18 @@
+---
+
+- hosts: '{{ remote_host }}'
+  sudo: yes
+  roles:
+  - selinux
+  - yum
+  - setup-system
+  - vim
+  - user
+  - python3
+  - sshd
+  - docker
+  - dockerHttps
+  - set-hostname
+  - Tab-AutoComple
+  - zabbix-agent
+  - docker-compose

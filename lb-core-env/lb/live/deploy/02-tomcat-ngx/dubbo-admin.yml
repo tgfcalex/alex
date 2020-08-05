@@ -1,0 +1,29 @@
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  dubbo-adm:
+    image: hub:5000/tomcat
+    networks:
+      - lbnet
+    hostname: dubbo-adm
+    environment:
+        - JAVA_OPT=-Xms2500m -Xmx2500m -Xmn2g
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.hostname == lc]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/lb/apps/dubbo-adm:/usr/local/tomcat/webapps/
+      - /var/lb/logs/dubbo-adm:/usr/local/tomcat/logs/

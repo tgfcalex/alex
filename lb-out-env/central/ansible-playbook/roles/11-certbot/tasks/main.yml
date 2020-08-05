@@ -1,0 +1,26 @@
+---
+
+#确定certbot是否安装成功
+- name: certbot --version
+  shell: certbot --version
+  register: result
+  ignore_errors: True
+
+# 删除之前的certbot
+- name: Ensure certbot not installed
+  yum:
+    name: certbot
+    state: absent
+  when: result is failed
+
+#拷贝certbot程序
+- name: copy certbot
+  copy: src=certbot-auto  dest=/usr/bin/certbot  mode=0755
+  when: result is failed
+
+# 安装certbot
+- name: install certbot
+  script: certbot_install.sh
+  when: result is failed
+
+

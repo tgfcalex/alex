@@ -1,0 +1,34 @@
+#-------------------------------------------- lb-new
+[new]
+lb-site-3
+lb-site-4
+[new:vars]
+ansible_ssh_port=22
+ansible_ssh_user=op
+
+
+#-------------------------------------------- lb-common
+[jumpserver]
+lb-jumpserver
+
+[sync]
+lb-sync-2
+
+#-------------------------------------------- lb-out
+[out:children]
+adm
+api
+site
+test
+
+[adm]
+lb-adm-[1:3]
+
+[api]
+lb-api-[1:3]
+
+[site]
+lb-site-[1:11]
+
+[test]
+lb-test-[1:2]

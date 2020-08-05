@@ -1,0 +1,62 @@
+
+---
+
+- name: disable Ctrl-Alt-Delete
+  file: src=/dev/null dest=/etc/systemd/system/ctrl-alt-del.target state=link
+
+# 内核参数优化
+- name: sysctl_config
+  copy: src=sysctl.conf dest=/etc/sysctl.conf mode=0644
+  notify:
+    - sysctl-load
+
+# 记录所有shell命令的执行历史...
+- name: copy bashrc
+  copy: src=bashrc dest=/etc/bashrc mode=0644
+  notify:
+    - source bashrc
+
+# 添加 PS1 提示
+- name: copy profile
+  copy: src=profile dest=/etc/profile mode=0644
+  notify:
+    - source profile
+
+# 增加打开最大文件描述符...
+- name: copy limits.conf
+  copy: src=limits.conf dest=/etc/security/limits.conf mode=0644
+
+# 添加 ctn 命令
+- name: copy ctn
+  copy: src=ctn dest=/usr/bin/ctn mode=0755
+  notify:
+    - source ctn
+
+# 添加rectn 命令
+- name: copy rectn
+  copy: src=rectn dest=/usr/local/bin/rectn mode=0755
+
+## 统一宿主机时区 CST
+- name: 时区改为CST
+  file: src=/usr/share/zoneinfo/Asia/Shanghai dest=/etc/localtime state=link
+
+
+# 时间同步服务器开启
+- name: Ensure chronyd is started and enabled at boot.
+  systemd:
+    name: chronyd
+    state: started
+    enabled: yes
+
+# 取消容器redis的警告
+- name: "临时取消透明大页警告，不用重启"
+  shell: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+  ignore_errors: True
+
+# 永久生效：redis透明大页
+- name: "永久取消透明大页警告，重启生效"
+  copy: src=rc.local  dest=/etc/rc.local
+
+#创建目录，用于同步外围工程
+- name: "mkdir /var/gb/site-out"
+  file: path=/var/gb/site-out  state=directory

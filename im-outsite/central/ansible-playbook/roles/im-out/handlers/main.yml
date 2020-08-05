@@ -1,0 +1,9 @@
+---
+
+- name: reload firewalld
+  command: firewall-cmd --reload
+
+- name: sshd-reload
+  systemd:
+    name: sshd
+    state: restarted

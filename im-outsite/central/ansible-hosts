@@ -1,0 +1,6 @@
+#-------------------------------------------- lb-new
+[new]
+
+[new:vars]
+ansible_ssh_port=22
+ansible_ssh_user=op

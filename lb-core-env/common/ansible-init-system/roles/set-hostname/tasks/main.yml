@@ -1,0 +1,4 @@
+---
+#设置控制机的主机名
+- name: Set Hostname ==> {{ inventory_hostname }}
+  shell: hostnamectl set-hostname  {{ inventory_hostname }}

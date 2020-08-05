@@ -1,0 +1,7 @@
+{ 
+  "core": {
+    "domain_url":        "http://domain.lb-boss.com:12280/manager/tool/get-domains.html?token=ux3zkfhdrs2gix8ddu2j1gozgqecmebz&md5=%s",
+    "site_info_url_1":   "http://domain.lb-boss.com:12280/manager/tool/get-sites.html?token=eb1emnnkfz5iqwf3b222953t2cvkxvqd&md5=%s"
+  },
+  "sync": "http://sync.lb-boss.com:88/__get_data_from_sync"
+} 

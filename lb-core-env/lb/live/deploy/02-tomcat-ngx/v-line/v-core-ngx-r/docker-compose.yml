@@ -1,0 +1,20 @@
+# Description: 核心机房nginx，应用合并
+
+version: "3"
+
+services:
+  v-core-ngx.r:
+    image: hub.dayu-boss.com/core/openresty
+    hostname: v-core-ngx
+    container_name: v-core-ngx.r
+    ports:
+      - "14480:80"
+    volumes:
+      - /var/v-lb/conf/v-core-ngx.r/:/usr/local/openresty/nginx/conf/
+      - /var/v-lb/logs/v-core-ngx.r/:/data/nginx/logs/
+      - /var/lb/data/fserver/upload/data:/usr/local/nginx/html/fserver/files
+      - /var/v-lb/apps/rcenter:/usr/local/openresty/nginx/html/rcenter
+      - /var/v-lb/apps/mobile-h5/:/usr/local/openresty/nginx/html/six/
+      - /var/v-lb/apps/pc-h5/:/usr/local/openresty/nginx/html/cp/
+      - /var/lb/script:/usr/local/openresty/nginx/script
+      - /var/v-lb/apps/manager-pc:/local/openrestry/nginx/html/manager-pc

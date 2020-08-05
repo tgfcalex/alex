@@ -1,0 +1,132 @@
+# Usage : docker stack deploy -c rocketmq.yaml mq
+
+version: "3.3"
+
+networks:
+  im_net:
+    external: true
+
+services:
+  node1-m:
+    image: im-rocketmq
+    networks:
+      - im_net
+    hostname: node1-m
+    healthcheck:
+      disable: true
+    environment:
+      # 主从同名，表示同一组
+      - brokerName=node1
+      # 同组中，主=0, 从≠ 0
+      - brokerId=0
+      - namesrvAddr=node1-m:9876;node1-s:9876;node2-m:9876;node2-s:9876;node3-m:9876;node3-s:9876
+    volumes:
+      - /var/common/logs/rocketmq/node1-m:/var/rocketmq/logs/
+      - /var/common/data/rocketmq/node1-m:/var/rocketmq/store/
+    deploy:
+      placement:
+        # 部署在指定的节点
+        constraints:  [node.labels.mq == 1]
+      restart_policy:
+        condition: on-failure
+
+  node2-m:
+    image: im-rocketmq
+    networks:
+      - im_net
+    hostname: node2-m
+    healthcheck:
+      disable: true
+    environment:
+      - brokerName=node2
+      - brokerId=0
+      - namesrvAddr=node1-m:9876;node1-s:9876;node2-m:9876;node2-s:9876;node3-m:9876;node3-s:9876
+    volumes:
+      - /var/common/logs/rocketmq/node2-m:/var/rocketmq/logs/
+      - /var/common/data/rocketmq/node2-m:/var/rocketmq/store/
+    deploy:
+      placement:
+        constraints:  [node.labels.mq == 2]
+      restart_policy:
+        condition: on-failure
+
+  node3-m:
+    image: im-rocketmq
+    networks:
+      - im_net
+    hostname: node3-m
+    healthcheck:
+      disable: true
+    environment:
+      - brokerName=node3
+      - brokerId=0
+      - namesrvAddr=node1-m:9876;node1-s:9876;node2-m:9876;node2-s:9876;node3-m:9876;node3-s:9876
+    volumes:
+      - /var/common/logs/rocketmq/node3-m:/var/rocketmq/logs/
+      - /var/common/data/rocketmq/node3-m:/var/rocketmq/store/
+    deploy:
+      placement:
+        constraints:  [node.labels.mq == 3]
+      restart_policy:
+        condition: on-failure
+
+
+  node1-s:
+    image: im-rocketmq
+    networks:
+      - im_net
+    hostname: node1-s
+    healthcheck:
+      disable: true
+    environment:
+      - brokerName=node1
+      - brokerId=1
+      - namesrvAddr=node1-m:9876;node1-s:9876;node2-m:9876;node2-s:9876;node3-m:9876;node3-s:9876
+    volumes:
+      - /var/common/logs/rocketmq/node1-s:/var/rocketmq/logs/
+      - /var/common/data/rocketmq/node1-s:/var/rocketmq/store/
+    deploy:
+      placement:
+        constraints:  [node.labels.mq == 2]
+      restart_policy:
+        condition: on-failure
+
+  node2-s:
+    image: im-rocketmq
+    networks:
+      - im_net
+    hostname: node2-s
+    healthcheck:
+      disable: true
+    environment:
+      - brokerName=node2
+      - brokerId=1
+      - namesrvAddr=node1-m:9876;node1-s:9876;node2-m:9876;node2-s:9876;node3-m:9876;node3-s:9876
+    volumes:
+      - /var/common/logs/rocketmq/node2-s:/var/rocketmq/logs/
+      - /var/common/data/rocketmq/node2-s:/var/rocketmq/store/
+    deploy:
+      placement:
+        constraints:  [node.labels.mq == 3]
+      restart_policy:
+        condition: on-failure
+
+  node3-s:
+    image: im-rocketmq
+    networks:
+      - im_net
+    hostname: node3-s
+    healthcheck:
+      disable: true
+    environment:
+      - brokerName=node3
+      - brokerId=1
+      - namesrvAddr=node1-m:9876;node1-s:9876;node2-m:9876;node2-s:9876;node3-m:9876;node3-s:9876
+    volumes:
+      - /var/common/logs/rocketmq/node3-s:/var/rocketmq/logs/
+      - /var/common/data/rocketmq/node3-s:/var/rocketmq/store/
+    deploy:
+      placement:
+        constraints:  [node.labels.mq == 1]
+      restart_policy:
+        condition: on-failure

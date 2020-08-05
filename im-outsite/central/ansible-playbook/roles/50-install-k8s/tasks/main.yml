@@ -1,0 +1,43 @@
+---
+
+- debug:
+    msg:
+    - --------------------------------------------------------------------------------------------------------------
+    - ------------------------------------------------- Begin ------------------------------------------------------
+    - --------------------------------------------------------------------------------------------------------------
+
+# (see https://github.com/opsnull/follow-me-install-kubernetes-cluster/blob/master/01.%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F.md)
+# (see https://github.com/kubernetes-retired/contrib.git)
+
+- name: Disable swap
+  include: 00-swapoff.yml
+  tags: configure
+  when: disable_swap|bool
+
+- name: Install tools
+  include: 01-yum.yml
+  tags: install
+
+- name: Configure system
+  include: 02-system.yml
+  tags: configure
+
+- name: Install k8s
+  include: 03-install-k8s.yml
+  tags: install
+  when: INSTALL_K8S is defined and INSTALL_K8S == 'yes'
+#
+# Networking
+#- include: firewalld.yml
+#  when: has_firewalld
+#  tags: configure
+#
+#- include: iptables.yml
+#  when: not has_firewalld and has_iptables
+#  tags: configure
+
+#- name: start kubelet
+#  service:
+#   name: kubelet
+#   enabled: yes
+#   state: started

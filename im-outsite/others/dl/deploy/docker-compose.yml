@@ -1,0 +1,31 @@
+version: "3"
+
+networks:
+  dl_net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.230.230.0/24
+
+
+services:
+  app_dl:
+    image: hub.dayu-boss.com/core/openresty
+    hostname: app_dl
+    container_name: app_dl
+    restart: always
+    networks:
+      - dl_net
+    ports:
+      - "80:80"
+      - "443:443"
+      - "88:88"
+    volumes:
+      - "/etc/letsencrypt:/usr/local/openresty/nginx/conf/letsencrypt"
+      - "/var/git/ssl/:/var/git/ssl/"
+      - "/var/dl/conf/:/usr/local/openresty/nginx/conf/"
+      - "/var/dl/logs/:/data/nginx/logs/"
+      - "/var/download/:/var/download/"

@@ -1,0 +1,15 @@
+---
+
+- firewalld:
+    service: kube-node
+    permanent: yes
+    state: enabled
+    immediate: yes
+  ignore_errors: yes
+
+- firewalld:
+    masquerade: "yes"
+    state: enabled
+    permanent: yes
+    immediate: yes
+  ignore_errors: yes

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>Work</short>
+  <description>For use in work areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+  <service name="dhcpv6-client"/>
+  <service name="ssh"/>
+  <service name="rsyncd"/>
+  <port protocol="tcp" port="80"/>
+  <port protocol="tcp" port="88"/>
+  <port protocol="tcp" port="443"/>
+  <port protocol="tcp" port="1388"/>
+  <port protocol="tcp" port="8071"/>
+  <port protocol="tcp" port="8072"/>
+  <port protocol="tcp" port="8172"/>
+  <port protocol="tcp" port="10050"/>
+  
+
+  <rule family="ipv4">
+    <source address="122.2.70.240/28"/>
+    <port protocol="tcp" port="6343"/>
+    <accept/>
+  </rule>
+  <rule family="ipv4">
+    <source address="34.80.24.72/32"/>
+    <port protocol="tcp" port="6343"/>
+    <accept/>
+  </rule>
+  <rule family="ipv4">
+    <source address="34.80.24.72/32"/>
+    <port protocol="tcp" port="22"/>
+    <accept/>
+  </rule>
+  <rule family="ipv4">
+    <source address="35.220.176.89/32"/>
+    <port protocol="tcp" port="873"/>
+    <accept/>
+  </rule>
+  <rule family="ipv4">
+    <source address="35.234.56.238/32"/>
+    <port protocol="tcp" port="873"/>
+    <accept/>
+  </rule>
+  <rule family="ipv4">
+    <source address="35.234.56.238/32"/>
+    <port protocol="udp" port="873"/>
+    <accept/>
+  </rule>
+  <rule family="ipv4">
+    <source address="211.22.147.246/32"/>
+    <port protocol="tcp" port="6343"/>
+    <accept/>
+  </rule>
+</zone>

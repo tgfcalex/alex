@@ -1,0 +1,29 @@
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+  rocketmq-console:
+    image: hub.dayu-boss.com/core/rocketmq-console-ng:styletang
+    hostname: rocketmq-console
+    networks:
+      - lbnet
+    ports:
+      - "8088:8080"
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=node1-m:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.proxy == true]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      disable: true
+    volumes:
+      - /var/log/rocketmq-console:/root/logs/consolelogs

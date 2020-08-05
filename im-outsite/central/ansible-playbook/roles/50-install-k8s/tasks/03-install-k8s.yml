@@ -1,0 +1,32 @@
+---
+
+- name: Add Kubernetes' YUM repository
+  yum_repository:
+    name: Kubernetes
+    description: Kubernetes YUM repository
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    gpgcheck: yes
+    enabled: no
+    repo_gpgcheck: yes
+
+- name: "Install kubelet-{{ K8S_VERSION }} kubectl-{{ K8S_VERSION }} kubeadm-{{ K8S_VERSION }}"
+  yum:
+    name:
+      - "kubelet-{{ K8S_VERSION }}"
+      - "kubectl-{{ K8S_VERSION }}"
+      - "kubeadm-{{ K8S_VERSION }}"
+    state: present
+    update_cache: true
+    enablerepo: Kubernetes
+    disable_excludes: all
+
+# kubectl 命令补全
+- name: Get /etc/bash_completion.d/kubectl
+  stat: path=/etc/bash_completion.d/kubectl
+  register: kubectl_bash_completion
+
+- name: "Enabling shell autocompletion for kubectl"
+  shell: "kubectl completion bash > /etc/bash_completion.d/kubectl"
+  ignore_errors: true
+  when: kubectl_bash_completion.stat.exists is defined and kubectl_bash_completion.stat.exists == False

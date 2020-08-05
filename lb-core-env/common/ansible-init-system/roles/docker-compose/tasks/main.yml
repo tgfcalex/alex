@@ -1,0 +1,14 @@
+---
+
+- name: "判断是否安装Docker Compose"
+  shell: docker-compose --version &>/dev/null
+  register: result
+  ignore_errors: True
+
+- name: Install Docker Compose
+  shell: sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  when: result is failed
+  
+  - name: Docker Compose +x
+  shell: sudo chmod +x /usr/local/bin/docker-compose
+  when: result is failed

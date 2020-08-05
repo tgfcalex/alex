@@ -1,0 +1,57 @@
+version: '3.6'
+
+networks:
+  im_net:
+    external: true
+
+services:
+  test-ngx:
+    image: hub.chats-boss.com/im/base/openresty:latest
+    networks:
+      im_net:
+        aliases:
+          - crm.im.com
+          - smarttalk.im.com
+          - api.im.com
+          - file.im.com
+          - ws.im.com
+          - job.im.com
+          - admin.im.com
+          - robot.im.com
+          - user.im.com
+          - dl.im.com
+    hostname: im_test-ngx
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.core-ngx == true]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    #ports:
+    #  - target: 18880
+    #    published: 18880
+    #    protocol: tcp
+    #    mode: host
+    environment:
+      - nacos_server=http://172.21.1.15:8848/
+      - nacos_group=api-gateway
+      - nacos_tenant=c0ca972b-c4ef-4dac-b37b-cde22b69d7c7
+      - nacos_dataid_redis=redis
+      - nacos_dataid_public=public
+      - nacos_dataid_limit=limit
+      - nacos_dataid_rules=signature-limit
+      - check_host=api.jet666.com
+      - ip_white_list=172.21.0.0
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/im/conf/core-ngx/:/usr/local/openresty/nginx/conf/
+      - /var/im/logs/core-ngx/:/usr/local/openresty/nginx/logs/
+      - /var/im/lua/core-ngx/:/usr/local/openresty/nginx/lua/
+      - /var/im/apps/static/:/usr/local/openresty/nginx/html/static/
+      - /var/im/script/:/usr/local/openresty/nginx/script/
+      - /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem:/usr/local/openresty/nginx/ssl/ca-bundle.crt

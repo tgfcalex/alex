@@ -1,0 +1,10 @@
+---
+
+- name: "creat user op"
+  user: name={{item}} append=yes 
+  with_items:
+      - op
+    
+- name: "copy to /etc/sudoers"
+  copy: src=sudoers dest=/etc/sudoers mode=0440
+  

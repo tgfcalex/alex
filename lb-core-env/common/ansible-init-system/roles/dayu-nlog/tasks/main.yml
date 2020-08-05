@@ -1,0 +1,6 @@
+---
+#外围的日志分析
+- name: "外围日志分析工具==>dayu_nlog_reporter"
+  script: dayu_nlog_reporter.sh
+
+

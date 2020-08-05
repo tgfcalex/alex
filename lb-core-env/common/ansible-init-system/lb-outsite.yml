@@ -1,0 +1,27 @@
+---
+
+- hosts: '{{ remote_host }}'
+  sudo: yes
+  roles:
+  - selinux
+  - yum
+  - setup-system
+  - vim
+  - lb-crontab
+  - user
+  - python3
+  - firewalld
+  - sshd
+  - docker
+  - dockerHttps
+  - certbot
+  - set-ssh-keys
+  - set-hostname
+  - Tab-AutoComple
+  - dayu-nlog
+  - change-root-password
+  - zabbix-agent
+
+# 在docker运行的情况下，务必注释firewalld
+# 改变root密码，请及时录入大鱼平台
+

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -\
+
+if [ ${composesrv} ]; then
+    docker exec ${composesrv} nginx -s reload
+else
+    echo "composesrv: 未设置的环境变量"
+fi

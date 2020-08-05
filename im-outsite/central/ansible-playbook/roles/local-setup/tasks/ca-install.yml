@@ -1,0 +1,32 @@
+---
+
+- name: Download cfssl
+  get_url:
+    url: "{{ cfssl_url }}"
+    dest: "{{ local_setup_bin }}/cfssl"
+    validate_certs: False
+    mode: 0755
+  connection: local
+  run_once: true
+  become: no
+
+- name: Download cfssljson
+  get_url:
+    url: "{{ cfssljson_url }}"
+    dest: "{{ local_setup_bin }}/cfssljson"
+    validate_certs: False
+    mode: 0755
+  connection: local
+  run_once: true
+  become: no
+
+- name: Download cfssl-certinfo
+  get_url:
+    url: "{{ cfssl_certinfo_url }}"
+    dest: "{{ local_setup_bin }}/cfssl-certinfo"
+    validate_certs: False
+    mode: 0755
+  connection: local
+  run_once: true
+  become: no
+

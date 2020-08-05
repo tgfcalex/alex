@@ -1,0 +1,13 @@
+---
+
+#确认目录是否存在
+- name: Ensure /etc/docker/certs.d/hub.dayu-boss.com  exist
+  file: path=/etc/docker/certs.d/hub.dayu-boss.com  mode=0755  state=directory
+
+#复制证书文件到控制机
+- name: Copy certification file
+  copy: src=hub.dayu-boss.com.bundle.crt dest=/etc/docker/certs.d/hub.dayu-boss.com/hub.dayu-boss.com.bundle.crt
+
+#登录docker仓库
+- name: docker login hub.dayu-boss.com -> {user:guest}
+  shell: docker login  -u guest -p Guest@123 https://hub.dayu-boss.com

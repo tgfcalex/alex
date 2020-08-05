@@ -1,0 +1,24 @@
+version: "3.3"
+networks:
+  lbnet:
+    external: true
+
+services:
+
+# api 8001
+  squid:
+    image: hub.dayu-boss.com/core/squid
+    networks:
+      lbnet:
+        aliases:
+          - proxy-server
+    hostname: proxy-server
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.labels.squid == true]
+    ports:
+      - "10080:10080"
+    volumes:
+      - /var/lb/conf/squid/:/etc/squid/
+      - /var/lb/logs/squid/:/var/log/squid/

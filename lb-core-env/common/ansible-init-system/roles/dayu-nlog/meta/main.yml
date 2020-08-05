@@ -1,0 +1,6 @@
+---
+
+#日志分析工具依赖python3 和supervisor
+dependencies:
+  - { role: python3 }
+  - { role: yum }

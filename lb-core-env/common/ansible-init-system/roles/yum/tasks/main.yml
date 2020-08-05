@@ -1,0 +1,23 @@
+
+---
+
+- name: Install epel repo
+  yum:
+    name: 'epel-release.noarch'
+    state: latest
+
+- name: install the 'Development tools' package group
+  yum:
+    name: "@Development tools"
+    state: present
+
+- name: Install packages
+  yum:
+    name: "{{ pkg_list }}"
+    state: latest
+
+- name: upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
