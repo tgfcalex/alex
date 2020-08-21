@@ -1,0 +1,86 @@
+version: "3.3"
+
+networks:
+  im_net:
+    external: true
+
+services:
+
+  node-1:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: node-1
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 1]
+      restart_policy:
+        condition: on-failure
+
+  node-2:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: node-2
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 2]
+      restart_policy:
+        condition: on-failure
+
+  node-3:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: node-3
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 3]
+      restart_policy:
+        condition: on-failure
+
+  node-4:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: node-4
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 3]
+      restart_policy:
+        condition: on-failure
+
+
+  node-5:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: node-5
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 2]
+      restart_policy:
+        condition: on-failure
+
+  node-6:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: node-6
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 1]
+      restart_policy:
+        condition: on-failure

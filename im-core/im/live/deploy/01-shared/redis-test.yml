@@ -1,0 +1,25 @@
+version: "3.3"
+
+networks:
+  im_net:
+    external: true
+
+services:
+
+  master-1:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: redis-master
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 1]
+      restart_policy:
+        condition: on-failure
+    command: redis-server --port 6379 --requirepass helo  --appendonly yes
+    ports:
+      - 6379:6379
+    volumes:
+      - /var/im/data/redis/data:/data

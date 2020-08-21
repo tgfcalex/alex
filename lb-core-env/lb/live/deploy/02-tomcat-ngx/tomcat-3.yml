@@ -7,7 +7,7 @@ networks:
 services:
 
   mdcenter-3:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: mdcenter-3
@@ -17,7 +17,10 @@ services:
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 1
       placement:
@@ -33,7 +36,7 @@ services:
       - /var/lb/logs/mdcenter:/usr/local/tomcat/logs/
 
   manager-3:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: manager-3
@@ -43,7 +46,10 @@ services:
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 1
       placement:
@@ -59,7 +65,7 @@ services:
       - /var/lb/logs/manager:/usr/local/tomcat/logs/
 
   api-3:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: api-3
@@ -69,7 +75,10 @@ services:
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 2
       placement:
@@ -85,14 +94,17 @@ services:
       - /var/lb/logs/api:/usr/local/tomcat/logs/
 
   server-3:
-    image: hub.dayu-boss.com/core/tomcat-php
+    image: hub:5000/tomcat-php
     networks:
       - lbnet
     hostname: server-3
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 1
       placement:
@@ -106,20 +118,23 @@ services:
       - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
       - idc=A
     volumes:
-      - /var/lb/glusterfs/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/lb/glusterfs/apps/pay-impl-jars/:/data/impl-jars/pay
       - /var/lb/data/mq/server-rdb:/var/data/mq/rdb
       - /var/lb/apps/server:/usr/local/tomcat/webapps/server
       - /var/lb/logs/server:/usr/local/tomcat/logs/
 
   hall-3:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: hall-3
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 2
       placement:
@@ -138,14 +153,17 @@ services:
       - /var/lb/logs/hall:/usr/local/tomcat/logs/
 
   schedule-3:
-    image: hub.dayu-boss.com/core/tomcat-php
+    image: hub:5000/tomcat-php
     networks:
       - lbnet
     hostname: schedule-3
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 1
       placement:
@@ -164,14 +182,17 @@ services:
       - /var/lb/logs/schedule:/usr/local/tomcat/logs/
 
   game-schedule-3:
-    image: hub.dayu-boss.com/core/tomcat-php
+    image: hub:5000/tomcat-php
     networks:
       - lbnet
     hostname: game-schedule-3
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 1
       placement:
@@ -190,14 +211,17 @@ services:
       - /var/lb/logs/game-schedule:/usr/local/tomcat/logs/
 
   cache-service-3:
-    image: hub.dayu-boss.com/core/tomcat-php
+    image: hub:5000/tomcat-php
     networks:
       - lbnet
     hostname: cache-service-3
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 2
       placement:
@@ -211,7 +235,7 @@ services:
       - JAVA_OPT=-Xms4500m -Xmx4500m -Xmn4g
       - idc=A
     volumes:
-      - /var/lb/glusterfs/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/lb/glusterfs/apps/pay-impl-jars/:/data/impl-jars/pay
       - /var/lb/data/mq/cache-service-rdb:/var/data/mq/rdb
       - /var/lb/apps/cache-service:/usr/local/tomcat/webapps/cache-service
       - /var/lb/logs/cache-service:/usr/local/tomcat/logs/

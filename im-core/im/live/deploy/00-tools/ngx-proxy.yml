@@ -1,0 +1,33 @@
+# Usage : docker stack deploy -c ngx-proxy.yml tools
+version: '3.6'
+
+networks:
+  im_net:
+    external: true
+
+services:
+
+  ngx-proxy:
+    image: hub.dayu-boss.com/core/openresty:latest
+    hostname: ngx-proxy
+    networks:
+      - im_net
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+    deploy:
+      placement:
+        constraints: [node.labels.tools == true]
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - /var/im/conf/tools-ngx-proxy:/usr/local/openresty/nginx/conf
+      - /var/im/conf/ssl:/usr/local/openresty/nginx/ssl
+#      - /var/im/html/.well-known:/usr/local/openresty/nginx/html/.well-known
+      - /var/im/logs/tools-ngx-proxy:/data/nginx/logs

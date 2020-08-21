@@ -1,0 +1,31 @@
+version: '3.1'
+networks:
+  im_net:
+    external: true
+
+services:
+  im-user:
+    image: hub.chats-boss.com/im/im_user:jm_pro_1.4.11
+    restart: always
+    hostname: im-user
+    networks:
+      - im_net
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.labels.im == true]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      - nacos.config.server-addr=172.21.1.15:8848
+      - nacos.config.namespace=c0ca972b-c4ef-4dac-b37b-cde22b69d7c7
+      - SW_AGENT_NAME=im-user
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=172.21.1.27:11800 
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/im/logs/user:/logs

@@ -1,0 +1,25 @@
+# Description: 核心机房测试线
+# Usage : docker stack deploy -c v-ngx.yml  v
+version: "3.3"
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  v-core-ngx-a:
+    image: hub.dayu-boss.com/core/openresty
+    networks:
+      lbnet:
+        aliases:
+          - v-lb-fserver
+    hostname: v-core-ngx
+    ports:
+      - "15580:80"
+    deploy:
+      placement:
+        constraints: [node.labels.v-ngx == true ]
+    volumes:
+      - /var/v-lb/conf/v-core-ngx.a/:/usr/local/openresty/nginx/conf/
+      - /var/v-lb/logs/v-core-ngx.a/:/data/nginx/logs/
+      - /var/lb/script:/usr/local/openresty/nginx/script

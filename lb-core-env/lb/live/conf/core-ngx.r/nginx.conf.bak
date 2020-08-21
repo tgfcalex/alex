@@ -17,14 +17,18 @@ http {
     include                     mime.types;
     default_type  application/octet-stream;
     charset                          utf-8;
-    
-    lua_shared_dict      ids       100m;
+    log_by_lua_file             script/lua/log_access.lua;
     lua_shared_dict      sent_access  100m;
-    
-    log_format main '[$time_local] $status $http_uuid $X_system $remote_addr | $http_x_forwarded_for '
-                    '"$request_time|$upstream_response_time" "[$upstream_addr $upstream_cache_status]" '
-                    '$out_line "$request_method $scheme://$host$request_uri $server_protocol '
-                    '/ $body_bytes_sent" "$http_user_agent"';
+
+#    log_format  main '$time_local $status $upstream_http_uuid $X_system $http_out_line $upstream_addr $request_time $upstream_response_time $http_siteip '
+#                     '$request_method $host $uri $body_bytes_sent $http_x_forwarded_for';
+
+
+    log_format main '$time_local $status $upstream_http_uuid $remote_addr [$upstream_addr] '
+                    '$request_time $upstream_response_time $upstream_cache_status '
+                    '"$request_method $scheme://$host:$server_port$request_uri $server_protocol / $body_bytes_sent" '
+                    '|$http_x_forwarded_for | "http_user_agent" | ';
+
 
     access_log  /data/nginx/logs/access.log  main;
     log_not_found                             off;

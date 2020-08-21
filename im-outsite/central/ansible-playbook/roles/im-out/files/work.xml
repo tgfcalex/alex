@@ -27,14 +27,4 @@
     <port protocol="tcp" port="6343"/>
     <accept/>
   </rule>
-  <rule family="ipv4">
-    <source address="35.220.131.9/32"/>
-    <port protocol="tcp" port="873"/>
-    <accept/>
-  </rule>
-  <rule family="ipv4">
-    <source address="35.220.131.9/32"/>
-    <port protocol="udp" port="873"/>
-    <accept/>
-  </rule>  
-</zone>
+ </zone>

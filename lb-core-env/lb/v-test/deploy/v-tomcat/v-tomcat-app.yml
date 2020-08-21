@@ -1,0 +1,126 @@
+# Description: 生产测试线tomcat
+# Usage: docker stack deploy -c v-tomcat-app.yml  v
+
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+
+  mdcenter-v:
+    image: hub:5000/tomcat
+    networks:
+      - lbnet
+    hostname: mdcenter-v
+    environment:
+        - JAVA_OPT=-Xms1500m -Xmx1500m -Xmn1g
+        - idc=V
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/v-lb/data/mq/mdcenter-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/mdcenter:/usr/local/tomcat/webapps/mdcenter
+      - /var/v-lb/logs/mdcenter:/usr/local/tomcat/logs/
+
+  manager-v:
+    image: hub:5000/tomcat
+    networks:
+      - lbnet
+    hostname: manager-v
+    environment:
+        - JAVA_OPT=-Xms2000m -Xmx2000m -Xmn2g
+        - idc=V
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/v-lb/data/mq/manager-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/manager:/usr/local/tomcat/webapps/manager
+      - /var/v-lb/logs/manager:/usr/local/tomcat/logs/
+
+  api-v:
+    image: hub:5000/tomcat
+    networks:
+      - lbnet
+    hostname: api-v
+    environment:
+        - JAVA_OPT=-Xms1500m -Xmx1500m -Xmn1g
+        - idc=V
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    volumes:
+      - /var/v-lb/data/mq/api-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/api:/usr/local/tomcat/webapps/api
+      - /var/v-lb/logs/api:/usr/local/tomcat/logs/
+
+  hall-v:
+    image: hub:5000/tomcat
+    networks:
+      - lbnet
+    hostname: hall-v
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms2000m -Xmx2000m -Xmn2g
+      - idc=V
+    volumes:
+      - /var/v-lb/data/mq/hall-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/hall:/usr/local/tomcat/webapps/hall
+      - /var/v-lb/logs/hall:/usr/local/tomcat/logs/

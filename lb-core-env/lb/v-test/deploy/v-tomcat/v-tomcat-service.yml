@@ -1,0 +1,128 @@
+# Description: 生产测试线tomcat
+# Usage: docker stack deploy -c v-tomcat-service.yml  v
+
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+  server-v:
+    image: hub:5000/tomcat-php
+    networks:
+      - lbnet
+    hostname: server-v
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms2000m -Xmx2000m -Xmn2g
+      - idc=V
+    volumes:
+      - /var/v-lb/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/v-lb/data/mq/server-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/server:/usr/local/tomcat/webapps/server
+      - /var/v-lb/logs/server:/usr/local/tomcat/logs/
+
+#  schedule-v:
+#    image: hub:5000/tomcat-php
+#    networks:
+#      - lbnet
+#    hostname: schedule-v
+#    healthcheck:
+#      disable: true
+#    extra_hosts:
+#      - "pg-01.ld1:10.10.6.1"
+#      - "pg-01.ld3:10.10.6.3"
+#      - "pg-02.ld2:10.10.6.2"
+#      - "pg-03.ld3:10.10.6.3"
+#    deploy:
+#      replicas: 1
+#      placement:
+#        constraints: [node.labels.line == 1]
+#      restart_policy:
+#          condition: on-failure
+#          delay: 5s
+#          max_attempts: 3
+#          window: 120s
+#    environment:
+#      - JAVA_OPT=-Xms2000m -Xmx2000m -Xmn2g
+#      - idc=V
+#    volumes:
+#      - /var/v-lb/data/mq/schedule-rdb:/var/data/mq/rdb
+#      - /var/v-lb/apps/schedule:/usr/local/tomcat/webapps/schedule
+#      - /var/v-lb/logs/schedule:/usr/local/tomcat/logs/
+#
+#  game-schedule-v:
+#    image: hub:5000/tomcat-php
+#    networks:
+#      - lbnet
+#    hostname: game-schedule-v
+#    healthcheck:
+#      disable: true
+#    extra_hosts:
+#      - "pg-01.ld1:10.10.6.1"
+#      - "pg-01.ld3:10.10.6.3"
+#      - "pg-02.ld2:10.10.6.2"
+#      - "pg-03.ld3:10.10.6.3"
+#    deploy:
+#      replicas: 1
+#      placement:
+#        constraints: [node.labels.line == 1]
+#      restart_policy:
+#          condition: on-failure
+#          delay: 5s
+#          max_attempts: 3
+#          window: 120s
+#    environment:
+#      - JAVA_OPT=-Xms2000m -Xmx2000m -Xmn2g
+#      - idc=V
+#    volumes:
+#      - /var/v-lb/data/mq/game-schedule-rdb:/var/data/mq/rdb
+#      - /var/v-lb/apps/game-schedule:/usr/local/tomcat/webapps/game-schedule
+#      - /var/v-lb/logs/game-schedule:/usr/local/tomcat/logs/
+
+  cache-service-v:
+    image: hub:5000/tomcat-php
+    networks:
+      - lbnet
+    hostname: cache-service-v
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms2000m -Xmx2000m -Xmn2g
+      - idc=V
+    volumes:
+      - /var/v-lb/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/v-lb/data/mq/cache-service-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/cache-service:/usr/local/tomcat/webapps/cache-service
+      - /var/v-lb/logs/cache-service:/usr/local/tomcat/logs/
+

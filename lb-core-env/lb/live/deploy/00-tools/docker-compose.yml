@@ -23,4 +23,5 @@ services:
     volumes:
       - /var/lb/conf/tool-out/:/usr/local/openresty/nginx/conf/
       - /var/lb/logs/tool-out/:/data/nginx/logs/
+      - /var/lb/dubbo_version/:/var/lb/dubbo_version/
 

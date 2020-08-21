@@ -30,6 +30,11 @@
   include: 05-crontab.yml
   tags: configure  
 
+############## zabbix-agent ############################
+- name: install zabbix-agent
+  include: 06-zabbix-agent.yml
+  tags: configure
+
 ############## Rsync file ##############################
 #配置rsyncd.conf
 - name: "copy rsyncd.conf as default file"

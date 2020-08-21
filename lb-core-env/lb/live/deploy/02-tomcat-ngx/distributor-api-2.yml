@@ -7,7 +7,7 @@ networks:
 services:
 
   distributor-api-2:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: distributor-api-2
@@ -17,7 +17,10 @@ services:
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 1
       placement:
@@ -33,7 +36,7 @@ services:
       - /var/lb/logs/distributor-api:/usr/local/tomcat/logs/
 
   merchant-api-2:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: merchant-api-2
@@ -43,7 +46,10 @@ services:
     healthcheck:
       disable: true
     extra_hosts:
-      - "pg-01.ld1:172.0.10.139"
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
     deploy:
       replicas: 1
       placement:

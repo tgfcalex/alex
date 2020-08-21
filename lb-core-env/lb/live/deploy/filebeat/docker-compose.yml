@@ -1,0 +1,22 @@
+version: '2'
+services:
+   filebeat:
+   #   network_mode: "host"
+      image: docker.elastic.co/beats/filebeat:6.4.1
+      container_name: filebeat
+      restart: always
+      extra_hosts:
+         - "kafka1:35.201.137.81"
+         - "kafka2:34.80.197.110"
+         - "kafka3:34.80.96.152"
+      volumes:
+         - /var/log/nginx/core-ngx-a/access.log:/var/logs/core-ngx-a/access.log
+         - /var/lb/conf/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+         - /var/lb/conf/filebeat/data/:/usr/share/filebeat/data/
+         - /var/lb/logs/lt1/core-ngx-in/access.log:/var/lb/logs/lt1/core-ngx-in/access.log
+         - /var/lb/logs/lt2/core-ngx-in/access.log:/var/lb/logs/lt2/core-ngx-in/access.log
+         - /var/lb/logs/la1/:/var/lb/logs/la1/
+         - /var/lb/logs/la2/:/var/lb/logs/la2/
+         - /var/lb/logs/la3/:/var/lb/logs/la3/
+         - /var/lb/logs/lr1/core-ngx.r/access.log:/var/lb/logs/lr1/core-ngx.r/access.log
+         - /var/lb/logs/lr2/core-ngx.r/access.log:/var/lb/logs/lr2/core-ngx.r/access.log

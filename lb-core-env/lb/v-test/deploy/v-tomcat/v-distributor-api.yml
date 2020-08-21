@@ -1,0 +1,66 @@
+version: "3.3"
+
+networks:
+  lbnet:
+    external: true
+
+services:
+  distributor-api:
+    image: hub:5000/tomcat
+    networks:
+      - lbnet
+    hostname: distributor-api
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms2000m -Xmx2000m -Xmn2g
+      - idc=V
+    volumes:
+      - /var/v-lb/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/v-lb/data/mq/distributor-api-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/distributor-api:/usr/local/tomcat/webapps/distributor-api
+      - /var/v-lb/logs/distributor-api:/usr/local/tomcat/logs
+
+  merchant-api:
+    image: hub:5000/tomcat
+    networks:
+      - lbnet
+    hostname: merchant-api
+    healthcheck:
+      disable: true
+    extra_hosts:
+      - "pg-01.ld1:10.10.6.1"
+      - "pg-01.ld3:10.10.6.3"
+      - "pg-02.ld2:10.10.6.2"
+      - "pg-03.ld3:10.10.6.3"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.line == 1]
+      restart_policy:
+          condition: on-failure
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+    environment:
+      - JAVA_OPT=-Xms2000m -Xmx2000m -Xmn2g
+      - idc=V
+    volumes:
+      - /var/v-lb/apps/pay-impl-jars:/data/impl-jars/pay
+      - /var/v-lb/data/mq/merchant-api-rdb:/var/data/mq/rdb
+      - /var/v-lb/apps/merchant-api:/usr/local/tomcat/webapps/merchant-api
+      - /var/v-lb/logs/merchant-api:/usr/local/tomcat/logs

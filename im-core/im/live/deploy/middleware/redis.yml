@@ -1,0 +1,76 @@
+# Usage : docker stack deploy -c redis.yml ss/dt
+
+version: "3.3"
+
+networks:
+  im_net:
+    external: true
+
+services:
+
+  rd-1:
+    image: hub.chats-boss.com/im/im/redis
+    networks:
+      - im_net
+    hostname: rd-1
+    deploy:
+      placement:
+        # 部署在指定的节点
+        constraints:  [node.labels.redis == 1]
+      restart_policy:
+        condition: on-failure
+
+  rd-2:
+    image: hub.chats-boss.com/im/im/redis
+    networks:
+      - im_net
+    hostname: rd-2
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 2]
+      restart_policy:
+        condition: on-failure
+
+  rd-3:
+    image: hub.chats-boss.com/im/im/redis
+    networks:
+      - im_net
+    hostname: rd-3
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 3]
+      restart_policy:
+        condition: on-failure
+
+  rd-4:
+    image: hub.chats-boss.com/im/im/redis
+    networks:
+      - im_net
+    hostname: rd-4
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 1]
+      restart_policy:
+        condition: on-failure
+
+  rd-5:
+    image: hub.chats-boss.com/im/im/redis
+    networks:
+      - im_net
+    hostname: rd-5
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 2]
+      restart_policy:
+        condition: on-failure
+
+  rd-6:
+    image: hub.chats-boss.com/im/im/redis
+    networks:
+      - im_net
+    hostname: rd-6
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 3]
+      restart_policy:
+        condition: on-failure

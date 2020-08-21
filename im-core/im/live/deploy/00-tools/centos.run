@@ -1,0 +1,7 @@
+#/bin/bash
+
+docker stop centos && docker rm centos
+
+docker run -itd --name centos \
+--network=im_net \
+centos:centos7.6.1810

@@ -7,7 +7,7 @@ networks:
 services:
 
   official-1:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: official-1
@@ -30,7 +30,7 @@ services:
       - /var/lb/logs/official:/usr/local/tomcat/logs/
 
   official-2:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: official-2
@@ -53,7 +53,7 @@ services:
       - /var/lb/logs/official:/usr/local/tomcat/logs/
 
   official-3:
-    image: hub.dayu-boss.com/core/tomcat
+    image: hub:5000/tomcat
     networks:
       - lbnet
     hostname: official-3
@@ -74,3 +74,4 @@ services:
     volumes:
       - /var/lb/apps/official:/usr/local/tomcat/webapps/official
       - /var/lb/logs/official:/usr/local/tomcat/logs/
+
