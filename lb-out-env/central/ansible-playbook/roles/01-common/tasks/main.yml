@@ -41,5 +41,11 @@
   tags: configure
   when:  SET_HOSTNAME
 
+###################################################### Modifying yum-corn ###############################################
+- name: Modifying yum-corn
+  include: 05-yum-cron.yml
+  tags: configure
+# when:  SET_HOSTNAME
+
 - name: " -------- flush_handlers --------"
   meta: flush_handlers

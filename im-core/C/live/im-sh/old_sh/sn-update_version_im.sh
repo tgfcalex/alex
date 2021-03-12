@@ -1,0 +1,176 @@
+#!/bin/sh
+echo -e "\033[33m IM 服務(image)更新腳本\033[0m"
+echo -e "\033[36m * 靜態資源 * \033[0m"
+echo -e "\033[32m admin file web-download website web-smarttalk \033[0m"
+echo -e "\033[36m * 動態資源 * \033[0m"
+echo -e "\033[32m api chatbot file gateway push robot server services smarttalk task user  \033[0m"
+echo -e "\033[36m * 開始部署 * \033[0m"
+read -p "請輸入要部署的遊戲名稱:  "  servicename
+#yml path
+path="/var/env/im/live/deploy/yml"
+if [ $servicename = "smarttalk"  ];then
+trueservicename=1
+elif [  $servicename = "web-smarttalk" ];then
+trueservicename=1
+#比對yml服務
+else
+trueservicename=`ls -l  $path/ | grep $servicename |wc -l`
+fi
+#服務的yml
+serviceyml=$servicename.yml
+#運行服務清單(每次執行產出)
+txtRunningServicePath=im_Running_service
+#hub路徑
+huburl=hub.chats-boss.com/im
+
+#判斷是否輸入正確的服務-in
+if [ $trueservicename = 1 ];then
+#抓取目前版號
+ymlno=`cat $path/$serviceyml | grep hub.chats-boss.com/im/* | awk -F ':' '{print $3}'`
+#匯出運行的服務清單
+echo "" > ./$txtRunningServicePath/Running.txt
+#echo -e "\033[32m * 產出im服務清單 * \033[0m "
+docker stack ps im | grep Running >> ./$txtRunningServicePath/Running.txt
+# web-smarttalk web-download website
+if [ $servicename = "web-download" ]; then
+    newservicename=web_download
+elif [ $servicename = "web-smarttalk" ]; then
+    newservicename=web_smarttalk
+elif [ $servicename = "website" ]; then
+    newservicename=jm_website
+else
+    newservicename=$servicename
+fi
+#取運行中服務的image版號
+runningno=`cat ./$txtRunningServicePath/Running.txt | grep im_im-$servicename |  awk -F ':' '{print $2}'  | awk '{print $1}'`
+echo  -e "\033[37m目前的 Y M L 版號 =>\033[0m" "\033[44m$newservicename:$ymlno\033[0m"
+echo  -e "\033[37m目前的Running版號 =>\033[0m" "\033[42m$newservicename:$runningno\033[0m"
+    #運行與yml版本號判斷-in
+    if [ $newservicename:$ymlno = $newservicename:$runningno ];then
+echo -e "\033[36m * 版號相同 * \033[0m"
+read -p "請輸入新的服務版號 => $servicename:jm_pro_1.0." no
+echo -e "\033[36m * Pull image * \033[0m"
+
+trueymlno=im_$newservicename:jm_pro_1.0.$no
+echo -e "\033[32m ==> im-a1 \033[0m "
+#echo "$newservicename"
+echo $trueymlno
+#echo -e "root@im-a1 docker pull $huburl/$trueymlno"
+#/bin/ssh root@im-a1 docker pull $huburl/$trueymlno
+#truepullimagea1=`/bin/ssh root@im-a1 echo $?`
+#
+#if [ $truepullimagea1 = 0 ];then
+#echo -e "\033[33m [ im-a1 ] image pull 成功!! \033[0m"
+#else
+#echo -e "\033[33m [ im-a1 ] image pull 失敗,請檢查image版號!! \033[0m"
+#    exit 2
+#fi
+#
+#echo -e "\033[32m ==> im-a2 \033[0m "
+#/bin/ssh root@im-a2 docker pull $huburl/$trueymlno
+#truepullimagea2=`/bin/ssh root@im-a2 echo $?`
+#if [ $truepullimagea2 = 0 ];then
+#echo -e "\033[33m [ im-a2 ] image pull 成功!! \033[0m"
+#else
+#echo -e "\033[33m [ im-a2 ] image pull 失敗,請檢查image版號!! \033[0m"
+#    exit 2
+#fi
+#echo -e "\033[32m ==> im-a3 \033[0m "
+#/bin/ssh root@im-a3 docker pull $huburl/$trueymlno
+#truepullimagea3=`/bin/ssh root@im-a3 echo $?`
+#if [ $truepullimagea3 = 0 ];then
+#echo -e "\033[33m [ im-a3 ] image pull 成功!! \033[0m"
+#else
+#echo -e "\033[33m [ im-a3 ] image pull 失敗,請檢查image版號!! \033[0m"
+#    exit 2
+#fi
+#任意鍵判斷
+get_char()
+{
+    SAVEDSTTY=`stty -g`
+    stty -echo
+    stty cbreak
+    dd if=/dev/tty bs=1 count=1 2> /dev/null
+    stty -raw
+    stty echo
+    stty $SAVEDSTTY
+} 
+echo -e "\033[45m""\033[0m"
+echo -e "\033[45m"* 請確認是否開始更新 im_$servicename,按下任意鍵繼續 !  "\033[0m"
+echo -e "\033[45m""\033[0m"
+echo  -e "\033[31m"結束腳本請CTRL+C "\033[0m"
+char=`get_char`
+    #運行與yml版本號判斷-exit
+echo -e "\033[36m * Update YML image * \033[0m"
+echo  -e "\033[37m目  前$servicename.yml的image指向 =>\033[0m" "\033[44m$huburl/im_$servicename:$ymlno\033[0m"
+#echo -e "\033[36m * 更換YML image * \033[0m"
+sed -i s/"$ymlno"/"jm_pro_1.0.$no"/g  $path/$servicename.yml
+newymlno=`cat $path/$serviceyml | grep hub.chats-boss.com/im/* | awk -F ':' '{print $3}'`
+echo  -e "\033[37m更改後$servicename.yml的image指向 =>\033[0m" "\033[42m$huburl/im_$servicename:$newymlno\033[0m"
+echo -e "\033[36m * 關閉Running Service * \033[0m"
+sleep 3
+echo -e "\033[32m [執行關閉服務] => \033[0m" `docker service rm im_im-$servicename`
+echo -e "\033[33m * 等待服務關閉 \033[0m" 
+sleep 20
+#echo -e "\033[36m * 移除舊的image * \033[0m"
+#echo -e "\033[32m ==> im-a1 \033[0m "
+#/bin/ssh root@im-a1 docker image rm  $huburl/im_$newservicename:$ymlno
+#echo -e "\033[32m ==> im-a2 \033[0m "
+#/bin/ssh root@im-a2 docker image rm  $huburl/im_$newservicename:$ymlno
+#echo -e "\033[32m ==> im-a3 \033[0m "
+#/bin/ssh root@im-a3 docker image rm  $huburl/im_$newservicename:$ymlno
+/bin/ssh root@im-a1 docker pull $huburl/$trueymlno
+truepullimagea1=`/bin/ssh root@im-a1 echo $?`
+
+if [ $truepullimagea1 = 0 ];then
+echo -e "\033[33m [ im-a1 ] image pull 成功!! \033[0m"
+else
+echo -e "\033[33m [ im-a1 ] image pull 失敗,請檢查image版號!! \033[0m"
+    exit 2
+fi
+
+echo -e "\033[32m ==> im-a2 \033[0m "
+/bin/ssh root@im-a2 docker pull $huburl/$trueymlno
+truepullimagea2=`/bin/ssh root@im-a2 echo $?`
+if [ $truepullimagea2 = 0 ];then
+echo -e "\033[33m [ im-a2 ] image pull 成功!! \033[0m"
+else
+echo -e "\033[33m [ im-a2 ] image pull 失敗,請檢查image版號!! \033[0m"
+    exit 2
+fi
+echo -e "\033[32m ==> im-a3 \033[0m "
+/bin/ssh root@im-a3 docker pull $huburl/$trueymlno
+truepullimagea3=`/bin/ssh root@im-a3 echo $?`
+if [ $truepullimagea3 = 0 ];then
+echo -e "\033[33m [ im-a3 ] image pull 成功!! \033[0m"
+else
+echo -e "\033[33m [ im-a3 ] image pull 失敗,請檢查image版號!! \033[0m"
+    exit 2
+fi
+sleep 3
+echo -e "\033[36m * 開啟Running Service * \033[0m"
+#判斷compose指令
+if [ $servicename = web-smarttalk  ];then
+    echo -e "\033[32m [執行開啟服務compose] => \033[0m" `docker stack deploy  --compose-file $path/$servicename.yml im `
+elif [ $servicename = website ];then
+    echo -e "\033[32m [執行開啟服務compose] => \033[0m" `docker stack deploy  --compose-file $path/$servicename.yml im `
+elif [ $servicename = services ];then
+    echo -e "\033[32m [執行開啟服務compose] => \033[0m" `docker stack deploy  --compose-file $path/$servicename.yml im `
+else
+    echo -e "\033[32m [執行開啟服務] => \033[0m" `docker stack deploy -c $path/$servicename.yml im `
+fi
+#echo -e "\033[32m [執行開啟服務compose] => \033[0m" `docker stack deploy  --compose-file $path/$servicename.yml im `
+#echo -e "\033[32m [執行開啟服務] => \033[0m" `docker stack deploy -c $path/$servicename.yml im `
+#sh /root/im-sh/show_version_im.sh
+sleep 8
+echo -e "\033[36m * 服務狀態 * \033[0m"
+sh /root/im-sh/show_version_im.sh
+#echo -e "\033[36m * 移除舊的image * \033[0m"
+#/bin/ssh root@im-a1 docker image rm  $huburl/im_$servicename:$ymlno
+    else
+        echo -e "請確認運行請確認運行image版號為何與yml版號不相同！！"
+    fi
+else
+    echo "2" 
+fi
+

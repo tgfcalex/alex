@@ -1,0 +1,32 @@
+# docker stack deploy -c web-download.yml im
+
+version: '3.6'
+networks:
+  im_net:
+    external: true
+
+services:
+  im-web-download:
+    image: hub.chats-boss.com/im/im_web_download:jm_pro_1.0.6
+    restart: always
+    hostname: im_web-download
+    networks:
+      - im_net
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.im == true]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+   # ports:
+    #  - target: 80
+     #   published: 80
+      #  protocol: tcp
+      #  mode: host
+    volumes:
+      - /etc/localtime:/etc/localtime:ro

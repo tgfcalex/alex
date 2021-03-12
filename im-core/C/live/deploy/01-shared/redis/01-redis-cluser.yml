@@ -1,0 +1,61 @@
+version: "3.3"
+
+networks:
+  im_net:
+    external: true
+
+services:
+
+  master-1:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: redis-master
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 1]
+      restart_policy:
+        condition: on-failure
+    command: redis-server --port 6379 --requirepass helo  --appendonly yes
+    ports:
+      - 6379:6379
+    volumes:
+      - /var/im/data/redis/data:/data
+
+  slave-1:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: redis-salve-1
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 2]
+      restart_policy:
+        condition: on-failure
+    command: redis-server --slaveof master-1 6379 --port 6380  --requirepass helo --masterauth helo  --appendonly yes
+    ports:
+      - 6380:6380
+    volumes:
+      - /var/im/data/redis/data:/data
+
+  slave-2:
+    image: im/redis-cluster:latest
+    networks:
+      - im_net
+    hostname: redis-slave-2
+    healthcheck:
+      disable: true
+    deploy:
+      placement:
+        constraints:  [node.labels.redis == 3]
+      restart_policy:
+        condition: on-failure
+    command: redis-server --slaveof master-1 6381 --port 6381  --requirepass helo --masterauth helo  --appendonly yes
+    ports:
+      - 6381:6381
+    volumes:
+      - /var/im/data/redis/data:/data

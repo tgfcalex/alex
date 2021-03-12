@@ -13,6 +13,6 @@
   - 11-certbot
   - lb-out
   - python3
-  - zabbix-agent
   - 10-install-docker
+  - dayud
     #- 50-install-k8s

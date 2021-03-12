@@ -1,0 +1,8 @@
+    upstream lb-git {
+       server 211.72.215.42:25025;
+    }
+    server {
+        listen 991;
+        proxy_timeout 120s;
+        proxy_pass lb-git;
+    }

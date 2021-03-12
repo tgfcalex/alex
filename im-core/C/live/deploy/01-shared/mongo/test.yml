@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  mongors1n1:
+    image: mongo:4.0.2
+    command: mongod --shardsvr --replSet shard1 --dbpath /data/db --port 27017
+    networks:
+      - mongo
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /var/im/mongo/shard1:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+      placement:
+        # 指定在服务器 manager 上启动
+        constraints:
+          - node.labels.mogo == manager
+networks:
+  mongo:
+    external: true

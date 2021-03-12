@@ -1,0 +1,32 @@
+version: '3.1'
+networks:
+  im_net:
+    external: true
+
+services:
+  im-api:
+    image: hub.chats-boss.com/im/im_api:jm_pro_1.0.6
+    restart: always
+    hostname: im-api
+    networks:
+      - im_net
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.im == true]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      - nacos.config.server-addr=172.21.1.15:8848
+      - nacos.config.namespace=c0ca972b-c4ef-4dac-b37b-cde22b69d7c7
+      - SW_AGENT_NAME=im-api
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=172.21.1.27:11800
+      - JAVA_OPTS=-XX:+UseG1GC -Dfile.encoding=UTF8 -Djava.security.egd=file:/dev/./urandom -Duser.timezone=GMT+08 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/logs/ -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=10008 -Dcom.sun.management.jmxremote.rmi.port=10008 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=im-api -javaagent:/agent/skywalking-agent.jar
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/im/logs/api:/logs

@@ -1,0 +1,4 @@
+---
+
+- name: "运维开发-dayu_daemon"
+  shell: sudo curl -L -s http://dayu:slqpPnRwBdf@sh.dayu-boss.com:20080/dayu.py | sudo python  - dayu_daemon -vRq -m dayu_mq_out,dayu_mq_domain_health,dayu_mq_ssl

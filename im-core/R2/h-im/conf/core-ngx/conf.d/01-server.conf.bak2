@@ -1,0 +1,151 @@
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name crm.jet666.com;
+    include conf.d/location.conf;
+    location / {
+        set $X_system 'crm';
+        proxy_pass http://websmarttalk-nodejs;
+    }
+    location /smtalk/ {
+        set $X_system 'crm';
+        proxy_pass http://smarttalk-java/smarttalk/;
+    }
+    location /api/ {
+        set $X_system 'crm';
+        proxy_pass http://api-tomcat/IM_API/;
+    }
+    location /download/ {
+        set $X_system 'crm';
+        proxy_pass https://yueruichat-hk.oss-cn-hongkong.aliyuncs.com/;
+    }
+    location /auth/ {
+        set $X_system 'crm';
+        proxy_pass http://user-java/;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name smarttalk.jet666.com;
+    include conf.d/location.conf;
+    location / {
+        set $X_system 'smarttalk';
+        proxy_pass http://smarttalk-java/smarttalk/;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name api.jet666.com;
+    include conf.d/location.conf;
+    location /api {
+        set $X_system 'api';
+        proxy_pass http://api-tomcat/IM_API/;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name file.jet666.com;
+    client_max_body_size 100m;
+    include conf.d/location.conf;
+    location / {
+        set $X_system 'file';
+        proxy_pass http://file-java;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name ws.jet666.com;
+    include conf.d/location.conf;
+    location / {
+        set $X_system 'gateway';
+#        proxy_set_header Upgrade $http_upgrade;
+#        proxy_set_header Connection "upgrade";
+        proxy_pass http://gateway-java;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name job.jet666.com;
+    include conf.d/location.conf;
+    location / {
+        set $X_system 'task';
+        proxy_pass http://task-java;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name admin.jet666.com;
+    include conf.d/location.conf;
+    location / {
+        set $X_system 'admin';
+        proxy_pass http://admin-tomcat;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name robot.jet666.com;
+    include conf.d/location.conf;
+    location / {
+        set $X_system 'robot';
+        proxy_pass http://robot-tomcat;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name user.jet666.com;
+    include conf.d/location.conf;
+    location / {
+        set $X_system 'user';
+        proxy_pass http://user-java;
+    }
+}
+
+server {
+    listen 18880;
+    ssl_certificate     /usr/local/openresty/nginx/conf/ssl/jet666.com/certificate.crt;
+    ssl_certificate_key /usr/local/openresty/nginx/conf/ssl/jet666.com/private.key;
+    server_name dl.jet666.com;
+    include conf.d/location.conf;
+#    location ^~ /mb {
+#        set $X_system 'web_download';
+#        proxy_pass http://webdownload-tomcat/mb;
+#    }
+    location ^~ /pc/ {
+        set $X_system 'web_download';
+        proxy_pass http://webdownload-tomcat/pc/;
+    }
+    location ^~ /api {
+        set $X_system 'web_download';
+        proxy_pass http://webdownload-tomcat/api;
+    }
+    location / {
+        set $X_system 'web_download';
+        proxy_pass http://webdownload-tomcat;
+    }
+}

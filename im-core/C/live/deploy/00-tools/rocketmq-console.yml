@@ -1,0 +1,23 @@
+# Usage : docker stack deploy -c rocketmq-console.yml tools
+
+version: "3.3"
+
+networks:
+  im_net:
+    external: true
+
+services:
+
+  rocketmq-console:
+    image: styletang/rocketmq-console-ng
+    networks:
+      - im_net
+    hostname: rocketmq-console
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=172.21.1.15:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+#      - JAVA_OPTS=-Drocketmq.namesrv.addr=mq_node1-m:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+    deploy:
+      placement:
+        constraints: [node.labels.tools == true]
+      restart_policy:
+        condition: on-failure

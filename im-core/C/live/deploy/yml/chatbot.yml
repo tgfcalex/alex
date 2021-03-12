@@ -1,0 +1,33 @@
+version: '3.6'
+networks:
+  im_net:
+    external: true
+
+services:
+  im-chatbot:
+    image: hub.chats-boss.com/im/im_chatbot:jm_pro_1.0.12
+    restart: always
+    hostname: im-chatbot
+    networks:
+      - im_net
+    healthcheck:
+      disable: true
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.labels.chatbot == 1]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      - dubbo.registry.parameters.namespace=c0ca972b-c4ef-4dac-b37b-cde22b69d7c7
+      - "NACOS_SERVER_ADDR=172.21.1.24:8848"
+      - "NACOS_NAMESPACE=c0ca972b-c4ef-4dac-b37b-cde22b69d7c7"
+      - SW_AGENT_NAME=im-chatbot
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=172.21.1.27:11800
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /var/im/logs/chatbot:/data/logs/nlp/chatbot
+      - /var/im/data/model:/chatbot/model
